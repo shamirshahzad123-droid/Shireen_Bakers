@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feedback - Shireen Bakers</title>
+    <link rel="icon" type="image/webp" href="images/logo_transparent.webp?v=4">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary-yellow: #C5A028;
+            --dark-gray: #333333;
+            --soft-gray: #f8f9fa;
+            --border-gray: #e0e0e0;
+        }
+
+        .feedback-hero {
+            background: linear-gradient(135deg, var(--dark-gray) 0%, #1a1a1a 100%);
+            padding: 80px 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .feedback-hero h1 {
+            color: var(--primary-yellow);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feedback-container {
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+        }
+
+        .feedback-form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--soft-gray);
+            border-radius: 12px;
+            font-family: inherit;
+            background: var(--soft-gray);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-yellow);
+            background: white;
+            box-shadow: 0 0 10px rgba(197, 160, 40, 0.1);
+        }
+
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .feedback-item {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            border-left: 6px solid var(--primary-yellow);
+            transition: transform 0.3s ease;
+        }
+
+        .feedback-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .feedback-name {
+            font-weight: 700;
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+        }
+
+        .feedback-message {
+            color: #555;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .feedback-date {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 15px;
+            display: block;
+        }
+
+        .btn-primary {
+            background: var(--primary-yellow);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(197, 160, 40, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #ab8a22;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(197, 160, 40, 0.4);
+        }
+
+        #loading-feedback {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-grid">
+            <div class="header-left">
+                <button class="hamburger-btn"
+                    onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">
+                    ☰
+                </button>
+                <nav class="sidebar-menu">
+                    <button class="close-sidebar-btn"
+                        onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+                    <div class="sidebar-links">
+                        <a href="index.html" class="main-link">Home</a>
+                        <a href="index.html" class="main-link">Menu</a>
+                        <a href="location.html?view=map" class="main-link">Locations</a>
+                        <a href="about.html" class="main-link">About Us</a>
+                        <a href="feedback.html" class="main-link">Feedback</a>
+                        <a href="terms.html?view=privacy" class="main-link">Privacy Policy</a>
+                        <div class="sidebar-divider"></div>
+                        <h4 class="sidebar-heading">All Categories</h4>
+                        <a href="cakes.html">Cakes</a>
+                        <a href="pastries.html">Pastries</a>
+                        <a href="biscuits.html">Biscuits</a>
+                        <a href="bread.html">Bread</a>
+                        <a href="rusk.html">Rusk</a>
+                        <a href="snacks.html">Snacks</a>
+                        <a href="donuts.html">Donuts</a>
+                        <a href="icecream.html">Ice Cream</a>
+                        <a href="cookies&khatai.html">Cookies</a>
+                        <a href="puffs.html">Puffs</a>
+                        <a href="nimko.html">Nimko</a>
+                        <a href="chocolate.html">Chocolate</a>
+                        <a href="sandwiches.html">Sandwiches</a>
+                        <a href="salad.html">Salad</a>
+                        <a href="gifting.html">Gifting</a>
+                    </div>
+                </nav>
+                <div class="sidebar-overlay"
+                    onclick="document.querySelector('.sidebar-menu').classList.remove('active')"></div>
+                <nav class="inline-nav">
+                    <a href="cakes.html">Cakes</a>
+                    <a href="pastries.html">Pastries</a>
+                    <a href="biscuits.html">Biscuits</a>
+                    <a href="bread.html">Bread</a>
+                    <a href="rusk.html">Rusk</a>
+                </nav>
+            </div>
+            <div class="header-center">
+                <a href="index.html" class="logo">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="header-logo-img">
+                    Shireen <span>Bakers</span>
+                </a>
+            </div>
+            <div class="header-right">
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="window.location.href='login.html'" title="Login">
+                        <span>Login</span>
+                    </button>
+                    <button class="icon-btn" onclick="openCart()" title="Cart">
+                        Cart (<span class="cart-count">0</span>) 🛒
+                    </button>
+                </div>
+                <nav class="inline-nav">
+                    <a href="snacks.html">Snacks</a>
+                    <a href="donuts.html">Donuts</a>
+                    <a href="icecream.html">Ice Cream</a>
+                    <a href="cookies&khatai.html">Cookies</a>
+                    <a href="puffs.html">Puffs</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="feedback-hero">
+        <div class="container">
+            <h1 class="section-title">Your Feedback</h1>
+            <p>Help us serve you better. Share your thoughts and experiences.</p>
+        </div>
+    </section>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Auth Check Message -->
+                <div id="auth-prompt" class="card shadow-lg border-0 rounded-4 p-5 mb-5 text-center"
+                    style="display: none;">
+                    <h2 class="fw-bold mb-4">Share Your Thoughts</h2>
+                    <p class="text-muted mb-4 fs-5">You must be signed in to provide feedback and join our community.
+                    </p>
+                    <div class="d-grid gap-2 col-md-6 mx-auto">
+                        <a href="login.html" class="btn btn-primary btn-lg rounded-pill shadow">Sign In Now</a>
+                    </div>
+                </div>
+
+                <!-- Feedback Form -->
+                <div id="feedback-form-container" class="card shadow-lg border-0 rounded-4 p-5 mb-5"
+                    style="display: none;">
+                    <h2 class="fw-bold text-center mb-2">Share Your Thoughts</h2>
+                    <p id="user-display-name" class="text-center text-primary fw-bold mb-4 fs-5"></p>
+                    <form id="feedback-form">
+                        <div class="mb-4">
+                            <label for="fb-message" class="form-label fw-bold h5 mb-3 text-dark">Your Message</label>
+                            <textarea id="fb-message"
+                                class="form-control form-control-lg bg-light border-0 rounded-4 p-4" required rows="5"
+                                placeholder="How was your experience with Shireen Bakers? We'd love to hear your story..."></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit"
+                                class="btn btn-primary btn-lg rounded-pill shadow-lg py-3 fw-bold">Submit
+                                Feedback</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold text-dark">What Others Say</h2>
+                    <div class="mx-auto bg-primary rounded-pill mt-3" style="width: 80px; height: 5px;"></div>
+                </div>
+
+                <div id="loading-feedback" class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted italic h5">Loading thoughts from our community...</p>
+                </div>
+
+                <div class="feedback-list d-flex flex-column gap-4 mb-5" id="feedback-list">
+                    <!-- Feedbacks will be injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="footer-logo-img">
+                    Shireen <span>BAKERS</span>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://www.tiktok.com/@shireenbakers5?is_from_webapp=1&sender_device=pc"
+                        class="social-circle" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/_shireen_bakers?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        class="social-circle" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="social-circle" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-main">
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="about.html?view=about">About Us</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="contactus.html">Contact Us</a></li>
+                        <li><a href="location.html?view=map">Store Locator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="terms.html?view=terms">Terms & Conditions</a></li>
+                        <li><a href="terms.html?view=privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>2025 Shireen Bakers. All rights reserved</div>
+                <div class="powered-by">Powered by <span>US TECH & SOLUTIONS</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2>Your Cart</h2>
+                <span class="close-modal" onclick="closeCart()" style="position:static;">&times;</span>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-total"><span>Total:</span><span id="cart-total">$0.00</span></div>
+            <button class="btn btn-primary" style="width:100%"
+                onclick="alert('Checkout functionality coming soon!');">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Elements
+        const authPrompt = document.getElementById('auth-prompt');
+        const formContainer = document.getElementById('feedback-form-container');
+        const userDisplayName = document.getElementById('user-display-name');
+        const feedbackForm = document.getElementById('feedback-form');
+        const feedbackList = document.getElementById('feedback-list');
+        const loadingDiv = document.getElementById('loading-feedback');
+
+        // Check Auth State
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                authPrompt.style.display = 'none';
+                formContainer.style.display = 'block';
+                userDisplayName.textContent = `Posting as: ${user.displayName || user.email}`;
+            } else {
+                authPrompt.style.display = 'block';
+                formContainer.style.display = 'none';
+            }
+        });
+
+        // Submit Feedback
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('Please sign in first');
+                return;
+            }
+
+            const message = document.getElementById('fb-message').value;
+
+            try {
+                console.log("Preparing submission for user:", user.uid);
+                // Adding a default rating of 5 internally to satisfy any existing Firestore validation rules
+                const feedbackData = {
+                    name: user.displayName || user.email,
+                    message: message,
+                    userId: user.uid,
+                    rating: 5,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                console.log("Submission data:", feedbackData);
+
+                await db.collection('feedbacks').add(feedbackData);
+
+                console.log("Feedback added successfully!");
+                alert('Thank you for your feedback!');
+                feedbackForm.reset();
+            } catch (error) {
+                console.error("DETAILED Error adding feedback: ", error);
+                // Specifically check for common Firebase errors
+                let userMessage = error.message;
+                if (error.code === 'permission-denied') {
+                    userMessage = "Permission Denied. Please ensure you are logged in and the database rules allow this submission.";
+                }
+                alert('Error submitting feedback: ' + userMessage);
+            }
+        });
+
+        // Load Feedbacks
+        db.collection('feedbacks').orderBy('timestamp', 'desc').onSnapshot((querySnapshot) => {
+            feedbackList.innerHTML = '';
+            loadingDiv.style.display = 'none';
+
+            if (querySnapshot.empty) {
+                feedbackList.innerHTML = '<p style="text-align:center; color:#888;">No feedbacks yet. Be the first to share your experience!</p>';
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Just now';
+
+                const item = document.createElement('div');
+                item.className = 'card shadow-sm border-0 rounded-4 mb-4 feedback-item overflow-hidden';
+                item.style.borderLeft = "5px solid var(--primary-yellow)";
+                item.innerHTML = `
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h5 fw-bold text-dark mb-0">${data.name}</span>
+                            <span class="badge bg-light text-muted fw-normal p-2 rounded-pill shadow-sm">
+                                <i class="bi bi-clock me-1"></i> ${date}
+                            </span>
+                        </div>
+                        <p class="card-text text-secondary lh-lg fs-5 mb-0">${data.message}</p>
+                    </div>
+                `;
+                feedbackList.appendChild(item);
+            });
+        });
+    </script>
+</body>
+
+</html>

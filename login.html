@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Shireen Bakers</title>
+    <link rel="icon" type="image/webp" href="images/logo_transparent.webp?v=4">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .top-action-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            transition: background 0.3s;
+        }
+
+        .top-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .auth-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+        }
+
+        .auth-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .auth-body {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #555;
+            box-shadow: 0 0 0 3px rgba(85, 85, 85, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            background: #C5A028;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(197, 160, 40, 0.2);
+            background: #ab8a22;
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .auth-divider span {
+            background: white;
+            padding: 0 20px;
+            position: relative;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .google-btn:hover {
+            border-color: #4285f4;
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 12px;
+        }
+
+        .forgot-password a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-footer-top {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .auth-footer-top a {
+            color: #C5A028;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer-top a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c00;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+            border-left: 4px solid #c00;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #060;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+            border-left: 4px solid #060;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1. Header -->
+    <header class="header">
+        <div class="container header-grid">
+            <div class="header-left">
+                <button class="hamburger-btn"
+                    onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">☰</button>
+                <nav class="sidebar-menu">
+                    <button class="close-sidebar-btn"
+                        onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+                    <div class="sidebar-links">
+                        <a href="index.html" class="main-link">Home</a>
+                        <a href="index.html" class="main-link">Menu</a>
+                        <a href="location.html?view=map" class="main-link">Locations</a>
+                        <a href="about.html" class="main-link">About Us</a>
+                        <a href="feedback.html" class="main-link">Feedback</a>
+                        <a href="terms.html?view=privacy" class="main-link">Privacy Policy</a>
+                    </div>
+                </nav>
+                <div class="sidebar-overlay"
+                    onclick="document.querySelector('.sidebar-menu').classList.remove('active')"></div>
+            </div>
+            <div class="header-center">
+                <a href="index.html" class="logo">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="header-logo-img">
+                    Shireen <span>Bakers</span>
+                </a>
+            </div>
+            <div class="header-right">
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="window.location.href='login.html'" title="Login">
+                        <span>Login</span>
+                    </button>
+                    <button class="icon-btn" onclick="openCart()" title="Cart">
+                        Cart (<span class="cart-count">0</span>) 🛒
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Welcome Back</h1>
+                <p>Login to your Shireen Bakers account</p>
+            </div>
+            <div class="auth-body">
+                <div id="auth-error" class="error-message"></div>
+                <div id="auth-success" class="success-message"></div>
+
+                <div style="margin-bottom: 20px; text-align: center; color: #666;">
+                    Don't have an account? <a href="signup.html"
+                        style="color: #C5A028; font-weight: 600; text-decoration: none;">Sign Up</a>
+                </div>
+
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                        <div class="forgot-password">
+                            <a href="javascript:void(0)" onclick="handleForgotPassword()">Forgot Password?</a>
+                        </div>
+                    </div>
+                    <button type="submit" id="login-btn" class="auth-btn">Login</button>
+                </form>
+
+                <div class="auth-divider">
+                    <span>OR</span>
+                </div>
+
+                <button type="button" class="google-btn" onclick="handleGoogleSignIn()">
+                    <img loading="lazy" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                        width="20">
+                    Sign in with Google
+                </button>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Compat Mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Show error message
+        function showAuthError(message) {
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('auth-success').style.display = 'none';
+        }
+
+        // Show success message
+        function showAuthSuccess(message) {
+            const successDiv = document.getElementById('auth-success');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('auth-error').style.display = 'none';
+        }
+
+        // Hide messages
+        function hideAuthMessages() {
+            document.getElementById('auth-error').style.display = 'none';
+            document.getElementById('auth-success').style.display = 'none';
+        }
+
+        // Handle Login
+        function handleLogin(event) {
+            event.preventDefault();
+            hideAuthMessages();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            loginUser(email, password)
+                .then((user) => {
+                    showAuthSuccess('Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    // Force generic error message as requested
+                    showAuthError('Incorrect credentials');
+                    btn.disabled = false;
+                    btn.textContent = 'Login';
+                });
+        }
+
+        // Handle Google Sign In
+        function handleGoogleSignIn() {
+            hideAuthMessages();
+            signInWithGoogle()
+                .then((user) => {
+                    if (user) {
+                        showAuthSuccess('Google login successful! Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Google login error:", error);
+                    showAuthError(error.message || 'Google login failed');
+                });
+        }
+
+        // Handle Forgot Password
+        function handleForgotPassword() {
+            const email = prompt('Enter your email address to reset password:');
+            if (email) {
+                resetPassword(email)
+                    .then(() => {
+                        alert('Password reset email sent! Check your inbox.');
+                    })
+                    .catch((error) => {
+                        alert('Error: ' + error.message);
+                    });
+            }
+        }
+
+        // If already logged in, redirect
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

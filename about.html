@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About Us - Shireen Bakers</title>
+    <meta name="description"
+        content="Learn about Shireen Bakers - A legacy of excellence in baking since 2000. Discover our story, values, and commitment to quality.">
+    <link rel="icon" type="image/webp" href="images/logo_transparent.webp?v=4">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* About Page Specific Styles */
+        .about-hero {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-100px);
+            }
+        }
+
+        .about-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .about-hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            opacity: 0.95;
+        }
+
+        .about-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #C5A028, transparent);
+            border-radius: 2px;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .about-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-image:hover {
+            transform: translateY(-10px);
+        }
+
+        .value-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #C5A028;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(197, 160, 40, 0.2);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            color: #C5A028;
+            margin-bottom: 15px;
+        }
+
+        .value-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .products-showcase {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 60px 20px;
+            margin: 60px 0;
+        }
+
+        .product-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #C5A028;
+        }
+
+        .product-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(197, 160, 40, 0.15);
+        }
+
+        .product-item h4 {
+            color: #C5A028;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .product-item p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 60px auto;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #C5A028, #ab8a22);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: calc(50% - 40px);
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #C5A028;
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(197, 160, 40, 0.3);
+            z-index: 2;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .cta-btn-primary {
+            background: #C5A028;
+            color: white;
+        }
+
+        .cta-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(197, 160, 40, 0.4);
+            background: #ab8a22;
+        }
+
+        .cta-btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-btn-secondary:hover {
+            background: #C5A028;
+            color: white;
+            border-color: #C5A028;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 80px !important;
+            }
+
+            .timeline-year {
+                left: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-grid">
+            <div class="header-left">
+                <button class="hamburger-btn"
+                    onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">
+                    ☰
+                </button>
+                <nav class="sidebar-menu">
+                    <button class="close-sidebar-btn"
+                        onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+                    <div class="sidebar-links">
+                        <a href="index.html" class="main-link">Home</a>
+                        <a href="index.html" class="main-link">Menu</a>
+                        <a href="location.html?view=map" class="main-link">Locations</a>
+                        <a href="about.html" class="main-link">About Us</a>
+                        <a href="feedback.html" class="main-link">Feedback</a>
+                        <a href="terms.html?view=privacy" class="main-link">Privacy Policy</a>
+                        <div class="sidebar-divider"></div>
+                        <h4 class="sidebar-heading">All Categories</h4>
+                        <a href="cakes.html">Cakes</a>
+                        <a href="pastries.html">Pastries</a>
+                        <a href="biscuits.html">Biscuits</a>
+                        <a href="bread.html">Bread</a>
+                        <a href="rusk.html">Rusk</a>
+                        <a href="snacks.html">Snacks</a>
+                        <a href="donuts.html">Donuts</a>
+                        <a href="icecream.html">Ice Cream</a>
+                        <a href="cookies&khatai.html">Cookies</a>
+                        <a href="puffs.html">Puffs</a>
+                        <a href="nimko.html">Nimko</a>
+                        <a href="chocolate.html">Chocolate</a>
+                        <a href="sandwiches.html">Sandwiches</a>
+                        <a href="salad.html">Salad</a>
+                        <a href="gifting.html">Gifting</a>
+                    </div>
+                </nav>
+                <div class="sidebar-overlay"
+                    onclick="document.querySelector('.sidebar-menu').classList.remove('active')">
+                </div>
+                <nav class="inline-nav">
+                    <a href="cakes.html">Cakes</a>
+                    <a href="pastries.html">Pastries</a>
+                    <a href="biscuits.html">Biscuits</a>
+                    <a href="bread.html">Bread</a>
+                    <a href="rusk.html">Rusk</a>
+                </nav>
+            </div>
+            <div class="header-center">
+                <a href="index.html" class="logo">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="header-logo-img">
+                    Shireen <span>Bakers</span>
+                </a>
+            </div>
+            <div class="header-right">
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="window.location.href='login.html'" title="Login">
+                        <span>Login</span>
+                    </button>
+                    <button class="icon-btn" onclick="openCart()" title="Cart">
+                        Cart (<span class="cart-count">0</span>) 🛒
+                    </button>
+                </div>
+                <nav class="inline-nav">
+                    <a href="snacks.html">Snacks</a>
+                    <a href="donuts.html">Donuts</a>
+                    <a href="icecream.html">Ice Cream</a>
+                    <a href="cookies&khatai.html">Cookies</a>
+                    <a href="puffs.html">Puffs</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <h1>About Shireen Bakers</h1>
+        <p>Crafting Moments of Joy Since 2000</p>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Our Story -->
+        <section class="about-section">
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-6 mb-4 mb-lg-0 about-text text-start">
+                    <h2>Our Story</h2>
+                    <p>Since 2000, Shireen Bakers has been a cornerstone of quality and tradition in Rawalpindi. What
+                        began as a small family bakery has blossomed into a beloved destination for premium baked goods.
+                    </p>
+                    <p>For over two decades, we've been dedicated to bringing joy to our community through the art of
+                        baking. Every product that leaves our ovens carries with it our commitment to excellence and the
+                        warmth of our heritage.</p>
+                    <p>Our journey has been one of passion, perseverance, and an unwavering dedication to quality. From
+                        our humble beginnings to becoming a household name, we've stayed true to our core values.</p>
+                </div>
+                <div class="col-lg-6 about-image">
+                    <svg width="100%" height="100%" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"
+                        class="img-fluid rounded-4 shadow-lg">
+                        <rect width="400" height="300" fill="#f5f5f5" />
+                        <text x="200" y="150" font-family="Arial, sans-serif" font-size="24" fill="#C5A028"
+                            text-anchor="middle" dominant-baseline="middle">🏪 Since 2000 🍰</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="row align-items-center flex-lg-row-reverse mt-5">
+                <div class="col-lg-6 mb-4 mb-lg-0 about-text text-start ps-lg-5">
+                    <h2>Our Mission</h2>
+                    <p>At Shireen Bakers, we believe that every celebration deserves the perfect centerpiece, and every
+                        day deserves a touch of sweetness. Our mission is to create exceptional baked goods that bring
+                        people together and create lasting memories.</p>
+                    <p>We combine time-honored baking techniques with modern innovation to deliver products that exceed
+                        expectations. Quality is not just a goal—it's our promise to every customer who walks through
+                        our doors.</p>
+                </div>
+                <div class="col-lg-6 about-image">
+                    <svg width="100%" height="100%" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"
+                        class="img-fluid rounded-4 shadow-lg">
+                        <rect width="400" height="300" fill="#f5f5f5" />
+                        <text x="200" y="150" font-family="Arial, sans-serif" font-size="24" fill="#C5A028"
+                            text-anchor="middle" dominant-baseline="middle">🎂 Quality & Excellence 🌟</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Values -->
+        <section class="about-section">
+            <h2 class="text-center mb-2" style="font-size: 2.5rem; color: #333;">Our Values</h2>
+            <p class="text-center mb-5 mx-auto" style="max-width: 700px; color: #666; font-size: 1.1rem;">
+                The principles that guide everything we do</p>
+
+            <div class="row g-4 row-cols-3 row-cols-md-4 mt-4">
+                <div class="col scroll-reveal">
+                    <div class="value-card h-100">
+                        <span class="value-icon">🏆</span>
+                        <h3>Quality First</h3>
+                        <p>We use only the finest ingredients and maintain the highest standards in every product we
+                            create.</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="value-card h-100">
+                        <span class="value-icon">❤️</span>
+                        <h3>Made with Love</h3>
+                        <p>Every item is crafted with care and passion, ensuring that our love for baking shines
+                            through.</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="value-card h-100">
+                        <span class="value-icon">🤝</span>
+                        <h3>Customer Focused</h3>
+                        <p>Your satisfaction is our priority. We listen, we care, and we deliver beyond expectations.
+                        </p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="value-card h-100">
+                        <span class="value-icon">🌱</span>
+                        <h3>Fresh Daily</h3>
+                        <p>We bake fresh every day to ensure you receive the best quality and taste in every bite.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What We Make -->
+        <section class="products-showcase px-3">
+            <h2 class="text-center mb-5">What We Create</h2>
+            <div class="row row-cols-3 row-cols-md-4 g-4 container mx-auto px-0">
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🎂 Premium Cakes</h4>
+                        <p>From classic dry cakes to luxurious mousse and fresh cream creations</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🥐 Artisan Pastries</h4>
+                        <p>Delicate puff pastries, rich mousse pastries, and fresh cream delights</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🍞 Fresh Bread</h4>
+                        <p>Daily baked breads and rusks made with traditional recipes</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🍪 Cookies & Biscuits</h4>
+                        <p>Handcrafted cookies, khatai, and premium biscuits</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🍩 Donuts & Puffs</h4>
+                        <p>Soft, fluffy donuts and savory puffs in various flavors</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🍫 Chocolates</h4>
+                        <p>Premium chocolates and confections for every occasion</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🍦 Ice Cream</h4>
+                        <p>Creamy ice creams and specialty ice cream cakes</p>
+                    </div>
+                </div>
+                <div class="col scroll-reveal">
+                    <div class="product-item h-100">
+                        <h4>🥗 Savory Items</h4>
+                        <p>Fresh salads, nimko, and delicious snacks</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="about-section">
+            <h2 class="text-center mb-5" style="font-size: 2.5rem; color: #333;">Our Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2000</div>
+                    <div class="timeline-content">
+                        <h3 style="color: #C5A028; margin-bottom: 10px;">The Beginning</h3>
+                        <p>Shireen Bakers opened its doors in Rawalpindi, starting with a passion for traditional baking
+                            and a commitment to quality.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2010</div>
+                    <div class="timeline-content">
+                        <h3 style="color: #C5A028; margin-bottom: 10px;">Expanding Horizons</h3>
+                        <p>Introduced new product lines including premium pastries and specialty cakes, becoming a
+                            favorite for celebrations.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content">
+                        <h3 style="color: #C5A028; margin-bottom: 10px;">Modern Innovation</h3>
+                        <p>Embraced modern baking techniques while preserving traditional recipes, offering the best of
+                            both worlds.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Today</div>
+                    <div class="timeline-content">
+                        <h3 style="color: #C5A028; margin-bottom: 10px;">A Legacy Continues</h3>
+                        <p>Serving thousands of happy customers with over 100+ products, maintaining our reputation for
+                            excellence.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta-section">
+            <h2>Visit Us Today</h2>
+            <p>Experience the taste of tradition and quality at Shireen Bakers</p>
+            <div class="cta-buttons">
+                <a href="index.html" class="cta-btn cta-btn-primary">Explore Our Menu</a>
+                <a href="location.html" class="cta-btn cta-btn-secondary">Find Our Location</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="footer-logo-img">
+                    Shireen <span>BAKERS</span>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://www.tiktok.com/@shireenbakers5?is_from_webapp=1&sender_device=pc"
+                        class="social-circle" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/_shireen_bakers?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        class="social-circle" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="social-circle" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-main">
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="contactus.html">Contact Us</a></li>
+                        <li><a href="location.html?view=map">Store Locator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="terms.html?view=terms">Terms & Conditions</a></li>
+                        <li><a href="terms.html?view=privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>2025 Shireen Bakers. All rights reserved</div>
+                <div class="powered-by">Powered by <span>US TECH & SOLUTIONS</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeLogin()">&times;</span>
+            <h2>Login</h2>
+            <form onsubmit="event.preventDefault(); alert('Logged in!'); closeLogin();">
+                <div class="form-group"><label>Email</label><input type="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group"><label>Password</label><input type="password" required
+                        placeholder="Enter your password"></div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2>Your Cart</h2>
+                <span class="close-modal" onclick="closeCart()" style="position:static;">&times;</span>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-total"><span>Total:</span><span id="cart-total">$0.00</span></div>
+            <button class="btn btn-primary" style="width:100%"
+                onclick="alert('Checkout functionality coming soon!');">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        // Dynamic title and heading based on URL parameter
+        window.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const view = urlParams.get('view');
+
+            const pageTitle = document.querySelector('title');
+            const heroHeading = document.querySelector('.about-hero h1');
+
+            if (view === 'history') {
+                pageTitle.textContent = 'Our History - Shireen Bakers';
+                heroHeading.textContent = 'Our History';
+            } else {
+                pageTitle.textContent = 'About Us - Shireen Bakers';
+                heroHeading.textContent = 'About Shireen Bakers';
+            }
+        });
+    </script>
+    <!-- Firebase SDK (Compat Mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config & Auth -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+
+    <script src="script.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
