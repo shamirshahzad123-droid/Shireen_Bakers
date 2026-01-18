@@ -17,7 +17,15 @@ firebase.initializeApp(firebaseConfig);
 // Initialize Firebase Authentication
 const auth = firebase.auth();
 
-// Initialize Firestore (for storing user data)
+// Initialize Firestore with Persistence enabled
 const db = firebase.firestore();
+db.enablePersistence({ synchronizeTabs: true })
+    .catch((err) => {
+        if (err.code == 'failed-precondition') {
+            console.warn("Firestore Persistence: Multiple tabs open. Local caching might be limited.");
+        } else if (err.code == 'unimplemented') {
+            console.warn("Firestore Persistence: Browser doesn't support offline features.");
+        }
+    });
 
 console.log("Firebase initialized successfully!");

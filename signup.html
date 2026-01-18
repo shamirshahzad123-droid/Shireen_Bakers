@@ -366,7 +366,18 @@
 
         function handleGoogleSignIn() {
             hideAuthMessages();
-            signInWithGoogle(); // auth.js handles logic
+            signInWithGoogle()
+                .then((user) => {
+                    if (user) {
+                        showAuthSuccess('Google sign up successful! Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Google Sign-In Error:", error);
+                });
         }
 
         // Handle Google One Tap response
@@ -383,7 +394,9 @@
                 })
                 .then(() => {
                     sessionStorage.removeItem('isSocialLogin');
-                    window.location.href = 'index.html';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
                 })
                 .catch((error) => {
                     sessionStorage.removeItem('isSocialLogin');

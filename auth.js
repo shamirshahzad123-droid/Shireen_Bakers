@@ -173,15 +173,37 @@ auth.onAuthStateChanged((user) => {
 // Helper to sync user to Firestore (used for Google/Redirect logins)
 function syncUserToFirestore(user) {
     if (!user) return Promise.resolve();
-    return db.collection('users').doc(user.uid).set({
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true }).then(() => {
+
+    // We want to ensure all users have a consistent schema
+    // If it's a new social user, they need 'orders' and 'cart' arrays
+    const userRef = db.collection('users').doc(user.uid);
+
+    return userRef.get().then(doc => {
+        const baseData = {
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (!doc.exists) {
+            console.log("🆕 Initializing new social user document...");
+            return userRef.set({
+                ...baseData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                orders: [],
+                cart: []
+            });
+        } else {
+            console.log("🔄 Updating existing social user document...");
+            return userRef.update(baseData);
+        }
+    }).then(() => {
         console.log("🏆 Firestore sync complete.");
     }).catch(err => {
         console.error("❌ Firestore sync failed:", err.message);
+        // We still resolve so the user isn't stuck, but the data might be stale
+        return Promise.resolve();
     });
 }
 
@@ -313,11 +335,11 @@ function signInWithGoogle() {
         console.log("Desktop popup flow...");
         return auth.signInWithPopup(provider)
             .then((result) => {
-                console.log("✅ Popup success. Syncing and redirecting...");
+                console.log("✅ Popup success. Syncing...");
                 return syncUserToFirestore(result.user).then(() => {
-                    sessionStorage.removeItem('isSocialLogin');
                     socialLoginInProgress = false;
-                    window.location.href = 'index.html';
+                    sessionStorage.removeItem('isSocialLogin');
+                    return result.user; // Return user to the UI for redirect logic
                 });
             })
             .catch((error) => {
@@ -327,6 +349,8 @@ function signInWithGoogle() {
 
                 if (error.code === 'auth/unauthorized-domain') {
                     alert("LIVE DOMAIN ERROR: Please add your domain to Firebase Console > Auth > Settings > Authorized Domains.");
+                } else if (error.code === 'auth/account-exists-with-different-credential') {
+                    alert("Account Alert: This email is already registered with a password. Please use your email/password to login.");
                 } else if (error.code !== 'auth/popup-closed-by-user') {
                     alert("Google Sign-In failed: " + error.message);
                 }
@@ -342,6 +366,7 @@ auth.getRedirectResult()
             console.log("✅ Redirect success. Syncing...");
             syncUserToFirestore(result.user).then(() => {
                 sessionStorage.removeItem('isSocialLogin');
+                // For mobile, we force redirect since original handler is lost
                 window.location.href = 'index.html';
             });
         }

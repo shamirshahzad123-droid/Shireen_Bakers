@@ -1,9 +1,10 @@
 /* Shireen Bakers Functionality */
 
 // State
-let cart = [];
+let cart = JSON.parse(localStorage.getItem('shireen_cart') || '[]');
 let isAuthReady = false;
 let isCartLoaded = false;
+let cartUnsubscribe = null; // To clean up listener on logout
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM loaded. Initializing cart...");
@@ -49,16 +50,23 @@ document.addEventListener('DOMContentLoaded', () => {
         auth.onAuthStateChanged((user) => {
             isAuthReady = true;
             if (user) {
-                console.log("User logged in, loading cart from Firestore...");
+                console.log("User logged in, syncing cart with Firestore...");
                 loadCartFromFirestore(user.uid);
             } else {
-                console.log("No user logged in, clearing local cart.");
+                console.log("No user logged in, resetting cart state.");
+                // Clear state
+                if (cartUnsubscribe) cartUnsubscribe();
+                cartUnsubscribe = null;
                 cart = [];
+                localStorage.removeItem('shireen_cart');
                 updateCartCount();
                 if (typeof cartModal !== 'undefined' && cartModal && cartModal.classList.contains('active')) renderCart();
             }
         });
     }
+
+    // Initial UI update from localStorage
+    updateCartCount();
 
     // Hero Slideshow Logic (Sliding Effect)
     const slides = document.querySelectorAll('.hero-slide');
@@ -177,6 +185,9 @@ function showToast(message) {
 function updateCartCount() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCountElements.forEach(el => el.textContent = totalItems);
+
+    // Immediate persistence for zero-latency feel
+    localStorage.setItem('shireen_cart', JSON.stringify(cart));
 }
 
 function renderCart() {
@@ -246,23 +257,28 @@ function saveCartToFirestore() {
 
 function loadCartFromFirestore(userId) {
     if (typeof db !== 'undefined') {
-        db.collection('users').doc(userId).get()
-            .then(doc => {
-                if (doc.exists && doc.data().cart) {
-                    cart = doc.data().cart;
-                    console.log("Cart loaded from database:", cart);
-                } else {
-                    cart = [];
-                    console.log("No cart found in database, starting fresh.");
+        // Use onSnapshot for real-time, high-performance updates
+        if (cartUnsubscribe) cartUnsubscribe();
+
+        cartUnsubscribe = db.collection('users').doc(userId).onSnapshot(doc => {
+            if (doc.exists && doc.data().cart) {
+                const cloudCart = doc.data().cart;
+
+                // Only update if cloud cart is different (to avoid jitter)
+                if (JSON.stringify(cloudCart) !== JSON.stringify(cart)) {
+                    console.log("🔄 Real-time cart sync from cloud.");
+                    cart = cloudCart;
+                    updateCartCount();
+                    if (cartModal && cartModal.classList.contains('active')) renderCart();
                 }
-                isCartLoaded = true; // Mark as loaded so saveCartToFirestore can proceed
-                updateCartCount();
-                if (cartModal && cartModal.classList.contains('active')) renderCart();
-            })
-            .catch(err => {
-                console.error("Error loading cart:", err);
-                isCartLoaded = true; // Even on error, allow saving so we don't block user forever
-            });
+            } else if (!isCartLoaded) {
+                console.log("No cart found in database, using local session.");
+            }
+            isCartLoaded = true;
+        }, err => {
+            console.error("Error watching cart:", err);
+            isCartLoaded = true;
+        });
     }
 }
 
