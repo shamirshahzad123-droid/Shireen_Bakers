@@ -315,55 +315,67 @@ function logoutUser() {
  * GOOGLE SIGN-IN
  */
 function signInWithGoogle() {
-    // Check if running from file system
-    if (window.location.protocol === 'file:') {
-        const error = "Google Sign-In will NOT work when opening HTML files directly from your computer (file://). You must use a local server (like Live Server extension in VS Code).";
-        alert(error);
-        return Promise.reject(new Error(error));
-    }
+    try {
+        // Check if running from file system
+        if (window.location.protocol === 'file:') {
+            alert("Error: Opening file directly. usage of local server required.");
+            return;
+        }
 
-    console.log("🔵 Initiating Google Sign-In...");
+        // DEBUG: Verify auth object exists
+        if (!firebase || !firebase.auth) {
+            alert("CRITICAL ERROR: Firebase SDK not loaded!");
+            return;
+        }
+        if (!auth) {
+            alert("CRITICAL ERROR: 'auth' object is undefined. Check firebase-config.js");
+            return;
+        }
 
-    // Show loading indicator
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.id = 'google-signin-loading';
-    loadingOverlay.style.cssText = `
+        // alert("DEBUG: Starting Sign-In..."); // Uncomment if needed
+
+        console.log("🔵 Initiating Google Sign-In...");
+
+        // Show loading indicator
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'google-signin-loading';
+        loadingOverlay.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.7); z-index: 99999;
         display: flex; align-items: center; justify-content: center;
     `;
-    loadingOverlay.innerHTML = `
+        loadingOverlay.innerHTML = `
         <div style="background: white; padding: 30px; border-radius: 15px; text-align: center;">
             <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
             <div style="font-size: 1.2rem; color: #333;">Signing in with Google...</div>
             <div style="font-size: 0.9rem; color: #666; margin-top: 10px;">Please wait</div>
         </div>
     `;
-    document.body.appendChild(loadingOverlay);
+        document.body.appendChild(loadingOverlay);
 
-    const removeLoading = () => {
-        const overlay = document.getElementById('google-signin-loading');
-        if (overlay) overlay.remove();
-    };
+        const removeLoading = () => {
+            const overlay = document.getElementById('google-signin-loading');
+            if (overlay) overlay.remove();
+        };
 
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope('profile');
-    provider.addScope('email');
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
 
-    // Set blocking flags
-    socialLoginInProgress = true;
-    sessionStorage.setItem('isSocialLogin', 'true');
-    sessionStorage.setItem('googleSignInAttempt', Date.now().toString());
+        // Set blocking flags
+        socialLoginInProgress = true;
+        sessionStorage.setItem('isSocialLogin', 'true');
+        sessionStorage.setItem('googleSignInAttempt', Date.now().toString());
 
-    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-    console.log(`🔵 Device type: ${isMobile ? 'Mobile' : 'Desktop'}`);
+        const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+        console.log(`🔵 Device type: ${isMobile ? 'Mobile' : 'Desktop'}`);
 
-    // MOBILE: Use redirect to avoid popup blockers
-    if (isMobile) {
-        console.log("🔵 Mobile detected - Using REDIRECT flow to avoid popup blockers");
+        // MOBILE: Use redirect to avoid popup blockers
+        if (isMobile) {
+            console.log("🔵 Mobile detected - Using REDIRECT flow to avoid popup blockers");
 
-        // Update loading message for redirect
-        loadingOverlay.innerHTML = `
+            // Update loading message for redirect
+            loadingOverlay.innerHTML = `
             <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px;">
                 <div style="font-size: 2.5rem; margin-bottom: 15px;">🔄</div>
                 <div style="font-size: 1.2rem; color: #333; margin-bottom: 10px;">Redirecting to Google...</div>
@@ -371,104 +383,105 @@ function signInWithGoogle() {
             </div>
         `;
 
-        // Set flag for redirect detection
-        sessionStorage.setItem('googleRedirectPending', 'true');
-        sessionStorage.setItem('redirectStartTime', Date.now().toString());
+            // Set flag for redirect detection
+            sessionStorage.setItem('googleRedirectPending', 'true');
+            sessionStorage.setItem('redirectStartTime', Date.now().toString());
 
-        // Redirect to Google - this will navigate away from the page
-        return auth.signInWithRedirect(provider)
-            .catch((error) => {
-                console.error("❌ Redirect initiation error:", error);
-                sessionStorage.removeItem('isSocialLogin');
-                sessionStorage.removeItem('googleRedirectPending');
-                removeLoading();
+            // Redirect to Google - this will navigate away from the page
+            return auth.signInWithRedirect(provider)
+                .catch((error) => {
+                    console.error("❌ Redirect initiation error:", error);
+                    sessionStorage.removeItem('isSocialLogin');
+                    sessionStorage.removeItem('googleRedirectPending');
+                    removeLoading();
 
-                let errorMessage = `Redirect failed: ${error.message}`;
-                if (error.code === 'auth/unauthorized-domain') {
-                    errorMessage = "⚠️ Domain Error\n\nYour domain is not authorized.\n\nFix: Add your domain in Firebase Console → Authentication → Settings → Authorized domains";
-                } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
-                    errorMessage = "⚠️ OAuth Not Published\n\nYour app is in testing mode.\n\nFix: Publish your app in Google Cloud Console → APIs & Services → OAuth consent screen → PUBLISH APP";
-                }
+                    let errorMessage = `Redirect failed: ${error.message}`;
+                    if (error.code === 'auth/unauthorized-domain') {
+                        errorMessage = "⚠️ Domain Error\n\nYour domain is not authorized.\n\nFix: Add your domain in Firebase Console → Authentication → Settings → Authorized domains";
+                    } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
+                        errorMessage = "⚠️ OAuth Not Published\n\nYour app is in testing mode.\n\nFix: Publish your app in Google Cloud Console → APIs & Services → OAuth consent screen → PUBLISH APP";
+                    }
 
-                alert(errorMessage);
-                throw error;
-            });
-    }
+                    alert(errorMessage);
+                    throw error;
+                });
+        }
 
-    // DESKTOP: Use popup for better UX (no full page redirect)
-    else {
-        console.log("🔵 Desktop detected - Using POPUP flow");
+        // DESKTOP: Use popup for better UX (no full page redirect)
+        else {
+            console.log("🔵 Desktop detected - Using POPUP flow");
 
-        return auth.signInWithPopup(provider)
-            .then((result) => {
-                console.log("✅ Popup success! User:", result.user.email);
-                console.log("🔵 Starting Firestore sync...");
+            return auth.signInWithPopup(provider)
+                .then((result) => {
+                    console.log("✅ Popup success! User:", result.user.email);
+                    console.log("🔵 Starting Firestore sync...");
 
-                return syncUserToFirestore(result.user)
-                    .then(() => {
-                        console.log("✅ Firestore sync complete!");
-                        socialLoginInProgress = false;
-                        sessionStorage.removeItem('isSocialLogin');
-                        sessionStorage.setItem('googleSignInSuccess', 'true');
+                    return syncUserToFirestore(result.user)
+                        .then(() => {
+                            console.log("✅ Firestore sync complete!");
+                            socialLoginInProgress = false;
+                            sessionStorage.removeItem('isSocialLogin');
+                            sessionStorage.setItem('googleSignInSuccess', 'true');
 
-                        removeLoading();
-                        alert('Google Sign-In successful! Redirecting...');
+                            removeLoading();
+                            alert('Google Sign-In successful! Redirecting...');
 
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 500);
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 500);
 
-                        return result.user;
-                    })
-                    .catch((syncError) => {
-                        console.error("❌ Firestore sync failed:", syncError);
-                        removeLoading();
-                        alert(`Sign-In succeeded but data sync failed: ${syncError.message}`);
-                        throw syncError;
-                    });
-            })
-            .catch((error) => {
-                console.error("❌ Popup error:", error.code, error.message);
-                socialLoginInProgress = false;
-                sessionStorage.removeItem('isSocialLogin');
-                removeLoading();
+                            return result.user;
+                        })
+                        .catch((syncError) => {
+                            console.error("❌ Firestore sync failed:", syncError);
+                            removeLoading();
+                            alert(`Sign-In succeeded but data sync failed: ${syncError.message}`);
+                            throw syncError;
+                        });
+                })
+                .catch((error) => {
+                    console.error("❌ Popup error:", error.code, error.message);
+                    socialLoginInProgress = false;
+                    sessionStorage.removeItem('isSocialLogin');
+                    removeLoading();
 
-                // Silent cancellation
-                if (error.code === 'auth/popup-closed-by-user' ||
-                    error.code === 'auth/cancelled-popup-request' ||
-                    error.code === 'auth/user-cancelled') {
-                    console.log("ℹ️ User cancelled");
-                    return Promise.reject(error);
-                }
+                    // Silent cancellation
+                    if (error.code === 'auth/popup-closed-by-user' ||
+                        error.code === 'auth/cancelled-popup-request' ||
+                        error.code === 'auth/user-cancelled') {
+                        console.log("ℹ️ User cancelled");
+                        return Promise.reject(error);
+                    }
 
-                // Error messages
-                let errorTitle = "Google Sign-In Failed";
-                let errorMessage = "";
+                    // Error messages
+                    let errorTitle = "Google Sign-In Failed";
+                    let errorMessage = "";
 
-                if (error.code === 'auth/unauthorized-domain') {
-                    errorTitle = "⚠️ Domain Not Authorized";
-                    errorMessage = `Add your domain in Firebase Console:\nAuthentication → Settings → Authorized domains`;
-                } else if (error.code === 'auth/popup-blocked') {
-                    errorTitle = "⚠️ Pop-up Blocked";
-                    errorMessage = `Please allow popups for this site`;
-                } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
-                    errorTitle = "⚠️ OAuth Not Published";
-                    errorMessage = `Go to Google Cloud Console:\nAPIs & Services → OAuth consent screen → PUBLISH APP`;
-                } else {
-                    errorMessage = `Error: ${error.code}\n${error.message}`;
-                }
+                    if (error.code === 'auth/unauthorized-domain') {
+                        errorTitle = "⚠️ Domain Not Authorized";
+                        errorMessage = `Add your domain in Firebase Console:\nAuthentication → Settings → Authorized domains`;
+                    } else if (error.code === 'auth/popup-blocked') {
+                        errorTitle = "⚠️ Pop-up Blocked";
+                        errorMessage = `Please allow popups for this site`;
+                    } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
+                        errorTitle = "⚠️ OAuth Not Published";
+                        errorMessage = `Go to Google Cloud Console:\nAPIs & Services → OAuth consent screen → PUBLISH APP`;
+                    } else {
+                        errorMessage = `Error: ${error.code}\n${error.message}`;
+                    }
 
-                alert(`${errorTitle}\n\n${errorMessage}`);
-                throw error;
-            });
+                    alert(`${errorTitle}\n\n${errorMessage}`);
+                    throw error;
+                });
+        }
+    } catch (error) {
+        console.error("CRITICAL ERROR in signInWithGoogle:", error);
+        alert(`Critical Error: ${error.message}`);
     }
 }
-// Check if running from file system
-if (window.location.protocol === 'file:') {
-    const error = "Google Sign-In will NOT work when opening HTML files directly from your computer (file://). You must use a local server (like Live Server extension in VS Code).";
-    alert(error);
-    return Promise.reject(new Error(error));
-}
+alert(error);
+return Promise.reject(new Error(error));
+
 
 console.log("Initiating Google Sign-In...");
 const provider = new firebase.auth.GoogleAuthProvider();
