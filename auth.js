@@ -487,9 +487,13 @@ function signInWithGoogle() {
 // Handle redirect result (for mobile users returning to page)
 // This runs on EVERY page load, so we wrap it in DOMContentLoaded to ensure Firebase is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // DIAGNOSTIC ALERT
+    const isSocial = sessionStorage.getItem('isSocialLogin');
+    const isPending = sessionStorage.getItem('googleRedirectPending');
+    alert(`DEBUG: Load - isSocial: ${isSocial}, isPending: ${isPending}, url: ${window.location.search}`);
+
     // Only process redirect if we're likely returning from one
-    const possibleRedirect = sessionStorage.getItem('isSocialLogin') === 'true' ||
-        sessionStorage.getItem('googleRedirectPending') === 'true';
+    const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token') || window.location.hash.includes('id_token');
 
     if (possibleRedirect || window.location.search.includes('code=')) {
         alert("DEBUG: Page loaded. Checking for redirect result..."); // NEW ALERT
