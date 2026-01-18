@@ -297,6 +297,9 @@ function logoutUser() {
     // Clear local cart storage explicitly on logout
     localStorage.removeItem('shireen_cart');
 
+    // Also try to clear the global cart variable if it's accessible (via window)
+    if (window.cart) window.cart = [];
+
     return auth.signOut()
         .then(() => {
             console.log("✅ Logout successful.");

@@ -69,11 +69,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadCartFromFirestore(user.uid);
             } else {
                 console.log("Auth session not active or loading...");
-                // Stop cloud listener but PRESERVE local cart for guest/returning session
+                // Stop cloud listener
                 if (cartUnsubscribe) cartUnsubscribe();
                 cartUnsubscribe = null;
-                // DO NOT clear 'cart' or 'localStorage' here! 
+
+                // If the user was previously logged in (isCartLoaded is true) and now is null, 
+                // and localStorage is empty, then we MUST clear the current runtime cart.
+                if (isCartLoaded && !localStorage.getItem('shireen_cart')) {
+                    console.log("Logout detected, clearing runtime cart.");
+                    cart = [];
+                    updateCartCount();
+                }
+
                 // Navigation often causes a brief 'null' user state.
+                // updateCartCount() here ensures the count reflects whatever is in 'cart'
                 updateCartCount();
             }
         });
@@ -338,23 +347,20 @@ window.addEventListener('pageshow', (event) => {
 
 // NAVIGATION
 function goBack() {
-    const hostname = window.location.hostname;
     const referrer = document.referrer;
+    const currentHost = window.location.hostname;
 
-    // Robust same-site detection for both local and hosted environments
-    let isSameSite = false;
-    if (referrer) {
-        if (hostname && referrer.includes(hostname)) {
-            isSameSite = true;
-        } else if (!hostname && (referrer.startsWith('file://') || referrer.includes(window.location.pathname.split('/').slice(0, -2).join('/')))) {
-            isSameSite = true;
+    // If we have a referrer and it's from our own domain
+    if (referrer && (referrer.includes(currentHost) || currentHost === '')) {
+        // Additional check: If referrer is exactly index.html or home, just go there
+        // This helps if history is messy
+        if (referrer.endsWith('/index.html') || referrer.endsWith('/')) {
+            window.location.href = 'index.html';
+        } else {
+            window.history.back();
         }
-    }
-
-    // fallback to home if we came from outside OR if there's no history to go back to
-    if (isSameSite && window.history.length > 1) {
-        window.history.back();
     } else {
+        // No referrer or external referrer -> always go home
         window.location.href = 'index.html';
     }
 }
