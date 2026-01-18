@@ -492,11 +492,13 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.getItem('googleRedirectPending') === 'true';
 
     if (possibleRedirect || window.location.search.includes('code=')) {
+        alert("DEBUG: Page loaded. Checking for redirect result..."); // NEW ALERT
         console.log("Checking for redirect result...");
 
         auth.getRedirectResult()
             .then((result) => {
                 if (result && result.user) {
+                    alert("DEBUG: Redirect SUCCESS! User: " + result.user.email); // NEW ALERT
                     console.log("✅ Redirect success. User:", result.user.email);
                     sessionStorage.setItem('redirectSuccess', 'true');
 
@@ -526,12 +528,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 } else if (possibleRedirect) {
                     // We expected a redirect but got nothing - clear flags
+                    alert("DEBUG: getRedirectResult returned NULL (no result found)"); // NEW ALERT
                     console.log("No redirect result found, clearing flags...");
                     sessionStorage.removeItem('isSocialLogin');
                     sessionStorage.removeItem('googleRedirectPending');
                 }
             })
             .catch((error) => {
+                alert("DEBUG: Redirect ERROR: " + error.message); // NEW ALERT
                 console.error("❌ Redirect auth error:", error.code, error.message);
                 sessionStorage.removeItem('isSocialLogin');
                 sessionStorage.removeItem('googleRedirectPending');
