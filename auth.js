@@ -335,7 +335,41 @@ function signInWithGoogle() {
 
     if (isMobile) {
         console.log("Mobile redirect flow...");
-        return auth.signInWithRedirect(provider);
+        // Set an additional flag specifically for redirect tracking
+        sessionStorage.setItem('googleRedirectPending', 'true');
+        sessionStorage.setItem('redirectTimestamp', Date.now().toString());
+
+        // Use signInWithRedirect for mobile
+        return auth.signInWithRedirect(provider)
+            .catch((error) => {
+                console.error("❌ Redirect initiation error:", error);
+                sessionStorage.removeItem('isSocialLogin');
+                sessionStorage.removeItem('googleRedirectPending');
+
+                // If redirect fails, try popup as fallback
+                console.log("Redirect failed, attempting popup fallback...");
+                return auth.signInWithPopup(provider)
+                    .then((result) => {
+                        console.log("✅ Fallback popup success. Syncing...");
+                        return syncUserToFirestore(result.user).then(() => {
+                            socialLoginInProgress = false;
+                            sessionStorage.removeItem('isSocialLogin');
+                            return result.user;
+                        });
+                    })
+                    .catch((popupError) => {
+                        socialLoginInProgress = false;
+                        sessionStorage.removeItem('isSocialLogin');
+                        console.error("❌ Popup fallback also failed:", popupError);
+
+                        if (popupError.code === 'auth/unauthorized-domain') {
+                            alert("DOMAIN ERROR: Your website domain must be added to Firebase Console > Authentication > Settings > Authorized Domains.");
+                        } else if (popupError.code !== 'auth/popup-closed-by-user' && popupError.code !== 'auth/cancelled-popup-request') {
+                            alert("Google Sign-In failed: " + popupError.message);
+                        }
+                        throw popupError;
+                    });
+            });
     } else {
         console.log("Desktop popup flow...");
         return auth.signInWithPopup(provider)
@@ -356,7 +390,7 @@ function signInWithGoogle() {
                     alert("LIVE DOMAIN ERROR: Please add your domain to Firebase Console > Auth > Settings > Authorized Domains.");
                 } else if (error.code === 'auth/account-exists-with-different-credential') {
                     alert("Account Alert: This email is already registered with a password. Please use your email/password to login.");
-                } else if (error.code !== 'auth/popup-closed-by-user') {
+                } else if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
                     alert("Google Sign-In failed: " + error.message);
                 }
                 throw error;
@@ -365,20 +399,79 @@ function signInWithGoogle() {
 }
 
 // Handle redirect result (for mobile users returning to page)
-auth.getRedirectResult()
-    .then((result) => {
-        if (result && result.user) {
-            console.log("✅ Redirect success. Syncing...");
-            syncUserToFirestore(result.user).then(() => {
+// This runs on EVERY page load, so we wrap it in DOMContentLoaded to ensure Firebase is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Only process redirect if we're likely returning from one
+    const possibleRedirect = sessionStorage.getItem('isSocialLogin') === 'true' ||
+        sessionStorage.getItem('googleRedirectPending') === 'true';
+
+    if (possibleRedirect || window.location.search.includes('code=')) {
+        console.log("Checking for redirect result...");
+
+        auth.getRedirectResult()
+            .then((result) => {
+                if (result && result.user) {
+                    console.log("✅ Redirect success. User:", result.user.email);
+                    sessionStorage.setItem('redirectSuccess', 'true');
+
+                    return syncUserToFirestore(result.user).then(() => {
+                        sessionStorage.removeItem('isSocialLogin');
+                        sessionStorage.removeItem('googleRedirectPending');
+
+                        // Show success message briefly before redirecting
+                        const message = document.createElement('div');
+                        message.style.cssText = `
+                            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                            background: white; padding: 30px; border-radius: 15px;
+                            box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 9999;
+                            text-align: center; font-size: 1.2rem;
+                        `;
+                        message.innerHTML = `
+                            <div style="color: #4CAF50; font-size: 3rem; margin-bottom: 10px;">✓</div>
+                            <div>Google Sign-In Successful!</div>
+                            <div style="font-size: 0.9rem; color: #666; margin-top: 10px;">Redirecting...</div>
+                        `;
+                        document.body.appendChild(message);
+
+                        // Redirect after brief delay
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    });
+                } else if (possibleRedirect) {
+                    // We expected a redirect but got nothing - clear flags
+                    console.log("No redirect result found, clearing flags...");
+                    sessionStorage.removeItem('isSocialLogin');
+                    sessionStorage.removeItem('googleRedirectPending');
+                }
+            })
+            .catch((error) => {
+                console.error("❌ Redirect auth error:", error.code, error.message);
                 sessionStorage.removeItem('isSocialLogin');
-                // For mobile, we force redirect since original handler is lost
-                window.location.href = 'index.html';
+                sessionStorage.removeItem('googleRedirectPending');
+
+                // Show user-friendly error message
+                let errorMsg = "Google Sign-In failed. Please try again.";
+
+                if (error.code === 'auth/unauthorized-domain') {
+                    errorMsg = "Domain Error: This website's domain needs to be authorized in Firebase. Please contact support.";
+                } else if (error.code === 'auth/account-exists-with-different-credential') {
+                    errorMsg = "This email is already registered with a password. Please use email/password login.";
+                } else if (error.code === 'auth/popup-blocked') {
+                    errorMsg = "Pop-up was blocked. Please allow pop-ups for this site.";
+                } else if (error.code === 'auth/cancelled-popup-request') {
+                    // User cancelled, don't show error
+                    return;
+                } else if (error.message) {
+                    errorMsg = `Sign-in error: ${error.message}`;
+                }
+
+                if (errorMsg) {
+                    alert(errorMsg);
+                }
             });
-        }
-    }).catch((error) => {
-        sessionStorage.removeItem('isSocialLogin');
-        console.error("Redirect auth error:", error);
-    });
+    }
+});
 
 /**
  * PASSWORD RESET
