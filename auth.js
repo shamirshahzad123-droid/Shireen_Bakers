@@ -322,6 +322,8 @@ function signInWithGoogle() {
             return;
         }
 
+        alert("DEBUG: signInWithGoogle started"); // NEW ALERT
+
         // DEBUG: Verify auth object exists
         if (!firebase || !firebase.auth) {
             alert("CRITICAL ERROR: Firebase SDK not loaded!");
@@ -372,6 +374,7 @@ function signInWithGoogle() {
 
         // MOBILE: Use redirect to avoid popup blockers
         if (isMobile) {
+            alert("DEBUG: Mobile flow detected. Redirecting..."); // NEW ALERT
             console.log("🔵 Mobile detected - Using REDIRECT flow to avoid popup blockers");
 
             // Update loading message for redirect
