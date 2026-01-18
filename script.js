@@ -1,5 +1,20 @@
 /* Shireen Bakers Functionality */
 
+// PROFESSIONAL SECURITY DETERRENCE
+// This prevents casual users from right-clicking to "Inspect" or "Save Image"
+document.addEventListener('contextmenu', (e) => {
+    // Only block if not on an input field (so users can still copy/paste in forms)
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        showToast("Right-click is restricted for security.");
+    }
+});
+
+// Console Security Warning
+console.log("%cSTOP!", "color: red; font-family: sans-serif; font-size: 4.5em; font-weight: bolder; text-shadow: #000 1px 1px;");
+console.log("%cThis is a browser feature intended for developers. If someone told you to copy-paste something here to 'hack' something or get a discount, it is a scam and will give them access to your account!", "font-family: sans-serif; font-size: 1.5em; font-weight: bold; color: #333;");
+console.log("%cFor Shireen Bakers security information, visit our official site.", "font-family: sans-serif; font-size: 1.2em; color: gray;");
+
 // State
 let cart = JSON.parse(localStorage.getItem('shireen_cart') || '[]');
 let isAuthReady = false;
