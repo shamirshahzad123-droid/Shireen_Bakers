@@ -525,34 +525,64 @@ img {
     margin: 10px 0;
 }
 
-/* Back Button Styling */
+/* Back Button Redesign - Premium Visuals */
 .back-btn {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(197, 160, 40, 0.3);
+    border-radius: 50%;
+    color: #C5A028;
+    /* Gold color */
+    font-size: 1.4rem;
     cursor: pointer;
-    color: var(--black);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    padding: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     margin-right: 15px;
-    /* Space between back arrow and ☰ */
     z-index: 1001;
-    line-height: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.back-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(197, 160, 40, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
 }
 
 .back-btn:hover {
-    color: var(--primary-red);
-    transform: translateX(-3px);
+    border-color: #C5A028;
+    color: #b08d20;
+    transform: translateX(-5px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(197, 160, 40, 0.15);
 }
 
-/* Hide back button when sidebar is active */
+.back-btn:hover::before {
+    width: 100px;
+    height: 100px;
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
 .back-btn.sidebar-active {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    transform: translateX(-20px) scale(0.8);
 }
 
 /* Adjust Hamburger Position */

@@ -338,18 +338,21 @@ window.addEventListener('pageshow', (event) => {
 
 // NAVIGATION
 function goBack() {
-    // If there is history within the same site, go back
     const hostname = window.location.hostname;
     const referrer = document.referrer;
 
-    // If we have a hostname, check if referrer includes it
-    // If we are local (no hostname), check if referrer is also a local file
-    const isSameSite = referrer && (
-        (hostname && referrer.includes(hostname)) ||
-        (!hostname && referrer.startsWith('file://'))
-    );
+    // Robust same-site detection for both local and hosted environments
+    let isSameSite = false;
+    if (referrer) {
+        if (hostname && referrer.includes(hostname)) {
+            isSameSite = true;
+        } else if (!hostname && (referrer.startsWith('file://') || referrer.includes(window.location.pathname.split('/').slice(0, -2).join('/')))) {
+            isSameSite = true;
+        }
+    }
 
-    if (isSameSite) {
+    // fallback to home if we came from outside OR if there's no history to go back to
+    if (isSameSite && window.history.length > 1) {
         window.history.back();
     } else {
         window.location.href = 'index.html';
