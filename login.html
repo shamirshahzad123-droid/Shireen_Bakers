@@ -401,14 +401,18 @@
             const credential = response.credential;
             const googleCredential = firebase.auth.GoogleAuthProvider.credential(credential);
 
+            sessionStorage.setItem('isSocialLogin', 'true');
             auth.signInWithCredential(googleCredential)
                 .then((result) => {
                     showAuthSuccess('Google login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                    return syncUserToFirestore(result.user);
+                })
+                .then(() => {
+                    sessionStorage.removeItem('isSocialLogin');
+                    window.location.href = 'index.html';
                 })
                 .catch((error) => {
+                    sessionStorage.removeItem('isSocialLogin');
                     console.error("One Tap login error:", error);
                     showAuthError('One Tap login failed');
                 });
@@ -430,7 +434,7 @@
 
         // If already logged in, redirect
         auth.onAuthStateChanged((user) => {
-            if (user) {
+            if (user && !sessionStorage.getItem('isSocialLogin')) {
                 window.location.href = 'index.html';
             }
         });

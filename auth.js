@@ -289,6 +289,9 @@ function signInWithGoogle() {
     // Better mobile support: Check if mobile
     const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
+    // Set flag to prevent global redirect on login pages from cutting off the popup
+    sessionStorage.setItem('isSocialLogin', 'true');
+
     if (isMobile) {
         console.log("Mobile detected, using signInWithRedirect...");
         return auth.signInWithRedirect(provider);
@@ -298,12 +301,23 @@ function signInWithGoogle() {
             .then((result) => {
                 const user = result.user;
                 console.log("✅ Google Auth successful. Syncing with Firestore...");
-                return syncUserToFirestore(user).then(() => user);
+                return syncUserToFirestore(user).then(() => {
+                    sessionStorage.removeItem('isSocialLogin');
+                    window.location.href = 'index.html';
+                    return user;
+                });
             })
             .catch((error) => {
                 console.error("❌ Google Sign-In error:", error.code, error.message);
-                if (error.code === 'auth/operation-not-allowed') {
+                sessionStorage.removeItem('isSocialLogin');
+
+                // Provide more specific feedback for cancelled popups
+                if (error.code === 'auth/popup-closed-by-user') {
+                    console.log("User closed the popup before finishing.");
+                } else if (error.code === 'auth/operation-not-allowed') {
                     console.warn("TIP: You must enable Google as a Sign-in provider in your Firebase Console.");
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    alert("This domain is not authorized for Google Sign-In. Please check your Firebase Console settings.");
                 }
                 throw error;
             });
@@ -316,10 +330,12 @@ auth.getRedirectResult()
         if (result.user) {
             console.log("✅ Google Redirect success. Syncing...");
             syncUserToFirestore(result.user).then(() => {
+                sessionStorage.removeItem('isSocialLogin');
                 window.location.href = 'index.html';
             });
         }
     }).catch((error) => {
+        sessionStorage.removeItem('isSocialLogin');
         console.error("Redirect auth error:", error);
     });
 
