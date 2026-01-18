@@ -294,6 +294,9 @@ function loginUser(email, password) {
  * LOGOUT FUNCTION
  */
 function logoutUser() {
+    // Clear local cart storage explicitly on logout
+    localStorage.removeItem('shireen_cart');
+
     return auth.signOut()
         .then(() => {
             console.log("✅ Logout successful.");
@@ -301,7 +304,6 @@ function logoutUser() {
         })
         .catch((error) => {
             console.error("❌ Logout error:", error);
-            // Silently redirect anyway as the session is usually cleared locally
             window.location.href = 'index.html';
         });
 }

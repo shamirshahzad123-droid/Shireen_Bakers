@@ -53,14 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("User logged in, syncing cart with Firestore...");
                 loadCartFromFirestore(user.uid);
             } else {
-                console.log("No user logged in, resetting cart state.");
-                // Clear state
+                console.log("Auth session not active or loading...");
+                // Stop cloud listener but PRESERVE local cart for guest/returning session
                 if (cartUnsubscribe) cartUnsubscribe();
                 cartUnsubscribe = null;
-                cart = [];
-                localStorage.removeItem('shireen_cart');
+                // DO NOT clear 'cart' or 'localStorage' here! 
+                // Navigation often causes a brief 'null' user state.
                 updateCartCount();
-                if (typeof cartModal !== 'undefined' && cartModal && cartModal.classList.contains('active')) renderCart();
             }
         });
     }
@@ -261,18 +260,25 @@ function loadCartFromFirestore(userId) {
         if (cartUnsubscribe) cartUnsubscribe();
 
         cartUnsubscribe = db.collection('users').doc(userId).onSnapshot(doc => {
-            if (doc.exists && doc.data().cart) {
-                const cloudCart = doc.data().cart;
+            if (doc.exists) {
+                const cloudData = doc.data();
+                const cloudCart = cloudData.cart || [];
 
-                // Only update if cloud cart is different (to avoid jitter)
-                if (JSON.stringify(cloudCart) !== JSON.stringify(cart)) {
+                // SMART MERGE: If cloud is empty but local has items, DO NOT overwrite.
+                // This prevents 'Back button' from wiping the cart before sync finishes.
+                if (cloudCart.length === 0 && cart.length > 0) {
+                    console.log("☁️ Cloud is empty, preserving local items and syncing up...");
+                    saveCartToFirestore();
+                }
+                // Otherwise, if they are different, update local to match cloud
+                else if (JSON.stringify(cloudCart) !== JSON.stringify(cart)) {
                     console.log("🔄 Real-time cart sync from cloud.");
                     cart = cloudCart;
                     updateCartCount();
                     if (cartModal && cartModal.classList.contains('active')) renderCart();
                 }
             } else if (!isCartLoaded) {
-                console.log("No cart found in database, using local session.");
+                console.log("No user doc in database yet, using local items.");
             }
             isCartLoaded = true;
         }, err => {
