@@ -133,24 +133,37 @@ function handlePasswordChangeRequest() {
         });
 }
 
+// Flag for social login to block auto-redirects
+let socialLoginInProgress = false;
+
 // Auth state listener
 auth.onAuthStateChanged((user) => {
     if (user) {
         console.log("✅ AUTH STATE: Logged In", user.uid);
+
+        // Handle UI updates
+        updateUIForLoggedInUser(user);
+
+        // Handle auto-redirect for login/signup pages
+        const path = window.location.pathname;
+        const isAuthPage = path.endsWith('login.html') || path.endsWith('signup.html');
+        const isSocialFlow = socialLoginInProgress || sessionStorage.getItem('isSocialLogin') === 'true';
+
+        if (isAuthPage && !isSocialFlow) {
+            console.log("User already logged in, redirecting to home...");
+            window.location.href = 'index.html';
+        }
+
+        // Firestore Sync (only if doc doesn't exist)
         db.collection('users').doc(user.uid).get()
             .then(doc => {
-                if (doc.exists) {
-                    console.log("📂 FIRESTORE: User data found", doc.data());
-                } else {
-                    console.warn("📂 FIRESTORE: User document missing in 'users' collection. Creating one...");
-                    // Auto-sync for users who might have missed the registration step (e.g. redirect users)
+                if (!doc.exists) {
+                    console.log("📂 FIRESTORE: Creating missing user document...");
                     syncUserToFirestore(user);
                 }
             })
-            .catch(err => {
-                console.error("📂 FIRESTORE ERROR:", err.message);
-            });
-        updateUIForLoggedInUser(user);
+            .catch(err => console.error("📂 FIRESTORE ERROR:", err.message));
+
     } else {
         console.log("ℹ️ AUTH STATE: Logged Out");
         updateUIForLoggedOutUser();
@@ -278,46 +291,44 @@ function signInWithGoogle() {
     // Check if running from file system
     if (window.location.protocol === 'file:') {
         const error = "Google Sign-In will NOT work when opening HTML files directly from your computer (file://). You must use a local server (like Live Server extension in VS Code).";
-        console.error(error);
         alert(error);
         return Promise.reject(new Error(error));
     }
 
-    console.log("Attempting Google Sign-In...");
+    console.log("Initiating Google Sign-In...");
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
 
-    // Better mobile support: Check if mobile
-    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-
-    // Set flag to prevent global redirect on login pages from cutting off the popup
+    // Set blocking flags
+    socialLoginInProgress = true;
     sessionStorage.setItem('isSocialLogin', 'true');
 
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+
     if (isMobile) {
-        console.log("Mobile detected, using signInWithRedirect...");
+        console.log("Mobile redirect flow...");
         return auth.signInWithRedirect(provider);
     } else {
-        console.log("Desktop detected, using signInWithPopup...");
+        console.log("Desktop popup flow...");
         return auth.signInWithPopup(provider)
             .then((result) => {
-                const user = result.user;
-                console.log("✅ Google Auth successful. Syncing with Firestore...");
-                return syncUserToFirestore(user).then(() => {
+                console.log("✅ Popup success. Syncing and redirecting...");
+                return syncUserToFirestore(result.user).then(() => {
                     sessionStorage.removeItem('isSocialLogin');
+                    socialLoginInProgress = false;
                     window.location.href = 'index.html';
-                    return user;
                 });
             })
             .catch((error) => {
-                console.error("❌ Google Sign-In error:", error.code, error.message);
+                socialLoginInProgress = false;
                 sessionStorage.removeItem('isSocialLogin');
+                console.error("❌ Popup error:", error.code, error.message);
 
-                // Provide more specific feedback for cancelled popups
-                if (error.code === 'auth/popup-closed-by-user') {
-                    console.log("User closed the popup before finishing.");
-                } else if (error.code === 'auth/operation-not-allowed') {
-                    console.warn("TIP: You must enable Google as a Sign-in provider in your Firebase Console.");
-                } else if (error.code === 'auth/unauthorized-domain') {
-                    alert("This domain is not authorized for Google Sign-In. Please check your Firebase Console settings.");
+                if (error.code === 'auth/unauthorized-domain') {
+                    alert("LIVE DOMAIN ERROR: Please add your domain to Firebase Console > Auth > Settings > Authorized Domains.");
+                } else if (error.code !== 'auth/popup-closed-by-user') {
+                    alert("Google Sign-In failed: " + error.message);
                 }
                 throw error;
             });
@@ -327,8 +338,8 @@ function signInWithGoogle() {
 // Handle redirect result (for mobile users returning to page)
 auth.getRedirectResult()
     .then((result) => {
-        if (result.user) {
-            console.log("✅ Google Redirect success. Syncing...");
+        if (result && result.user) {
+            console.log("✅ Redirect success. Syncing...");
             syncUserToFirestore(result.user).then(() => {
                 sessionStorage.removeItem('isSocialLogin');
                 window.location.href = 'index.html';

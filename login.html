@@ -432,12 +432,6 @@
             }
         }
 
-        // If already logged in, redirect
-        auth.onAuthStateChanged((user) => {
-            if (user && !sessionStorage.getItem('isSocialLogin')) {
-                window.location.href = 'index.html';
-            }
-        });
     </script>
 </body>
 
