@@ -498,12 +498,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const isPending = localStorage.getItem('googleRedirectPending');
     alert(`DEBUG: Load - isSocial: ${isSocial}, isPending: ${isPending}, url: ${window.location.search}, origin: ${window.location.origin}`);
 
-    // Always try checking if we have flags OR if the URL looks like a return trip
-    const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token');
-
     if (possibleRedirect || window.location.search.includes('code=')) {
+        const startOrigin = localStorage.getItem('startOrigin');
+        const currentOrigin = window.location.origin;
+
+        alert(`DEBUG: Return Page.\nStart Origin recorded: ${startOrigin}\nCurrent Origin: ${currentOrigin}\nMatch: ${startOrigin === currentOrigin}`);
+
         console.log("Checking for redirect result...");
-        alert("DEBUG: Calling getRedirectResult now..."); // CHECK ALERT
+        alert("DEBUG: Calling getRedirectResult now...");
 
         auth.getRedirectResult()
             .then((result) => {
@@ -538,17 +540,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 } else if (possibleRedirect) {
                     // We expected a redirect but got nothing - clear flags
-                    alert("DEBUG: getRedirectResult returned NULL (no result found)"); // NEW ALERT
+                    alert("DEBUG: getRedirectResult returned NULL (No User Found)");
                     console.log("No redirect result found, clearing flags...");
-                    sessionStorage.removeItem('isSocialLogin');
-                    sessionStorage.removeItem('googleRedirectPending');
+                    localStorage.removeItem('isSocialLogin');
+                    localStorage.removeItem('googleRedirectPending');
                 }
             })
             .catch((error) => {
-                alert("DEBUG: Redirect ERROR: " + error.message); // NEW ALERT
+                alert("DEBUG: Redirect ERROR: " + error.message);
                 console.error("❌ Redirect auth error:", error.code, error.message);
-                sessionStorage.removeItem('isSocialLogin');
-                sessionStorage.removeItem('googleRedirectPending');
+                localStorage.removeItem('isSocialLogin');
+                localStorage.removeItem('googleRedirectPending');
 
                 // Show user-friendly error message
                 let errorMsg = "Google Sign-In failed. Please try again.";
