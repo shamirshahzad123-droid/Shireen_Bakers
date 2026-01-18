@@ -142,7 +142,9 @@ auth.onAuthStateChanged((user) => {
                 if (doc.exists) {
                     console.log("📂 FIRESTORE: User data found", doc.data());
                 } else {
-                    console.warn("📂 FIRESTORE: User document missing in 'users' collection.");
+                    console.warn("📂 FIRESTORE: User document missing in 'users' collection. Creating one...");
+                    // Auto-sync for users who might have missed the registration step (e.g. redirect users)
+                    syncUserToFirestore(user);
                 }
             })
             .catch(err => {
@@ -154,6 +156,21 @@ auth.onAuthStateChanged((user) => {
         updateUIForLoggedOutUser();
     }
 });
+
+// Helper to sync user to Firestore (used for Google/Redirect logins)
+function syncUserToFirestore(user) {
+    if (!user) return Promise.resolve();
+    return db.collection('users').doc(user.uid).set({
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).then(() => {
+        console.log("🏆 Firestore sync complete.");
+    }).catch(err => {
+        console.error("❌ Firestore sync failed:", err.message);
+    });
+}
 
 /**
  * SIGN UP FUNCTION
@@ -269,36 +286,42 @@ function signInWithGoogle() {
     console.log("Attempting Google Sign-In...");
     const provider = new firebase.auth.GoogleAuthProvider();
 
-    return auth.signInWithPopup(provider)
-        .then((result) => {
-            const user = result.user;
-            console.log("✅ Google Auth successful. Syncing with Firestore...");
+    // Better mobile support: Check if mobile
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
-            // Store/Update user data in Firestore
-            return db.collection('users').doc(user.uid).set({
-                email: user.email,
-                displayName: user.displayName,
-                photoURL: user.photoURL,
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).catch(err => {
-                console.error("❌ Google Firestore sync failed:", err.message);
-                if (err.message.includes("permission-denied")) {
-                    throw new Error("Google login worked, but could not save your data to Firestore (Permission Denied). Check rules.");
+    if (isMobile) {
+        console.log("Mobile detected, using signInWithRedirect...");
+        return auth.signInWithRedirect(provider);
+    } else {
+        console.log("Desktop detected, using signInWithPopup...");
+        return auth.signInWithPopup(provider)
+            .then((result) => {
+                const user = result.user;
+                console.log("✅ Google Auth successful. Syncing with Firestore...");
+                return syncUserToFirestore(user).then(() => user);
+            })
+            .catch((error) => {
+                console.error("❌ Google Sign-In error:", error.code, error.message);
+                if (error.code === 'auth/operation-not-allowed') {
+                    console.warn("TIP: You must enable Google as a Sign-in provider in your Firebase Console.");
                 }
-                throw err;
+                throw error;
             });
-        }).then(() => {
-            console.log("🏆 Google Sign-In process complete.");
-            return auth.currentUser;
-        })
-        .catch((error) => {
-            console.error("❌ Google Sign-In error:", error.code, error.message);
-            if (error.code === 'auth/operation-not-allowed') {
-                console.warn("TIP: You must enable Google as a Sign-in provider in your Firebase Console.");
-            }
-            throw error;
-        });
+    }
 }
+
+// Handle redirect result (for mobile users returning to page)
+auth.getRedirectResult()
+    .then((result) => {
+        if (result.user) {
+            console.log("✅ Google Redirect success. Syncing...");
+            syncUserToFirestore(result.user).then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+    }).catch((error) => {
+        console.error("Redirect auth error:", error);
+    });
 
 /**
  * PASSWORD RESET
