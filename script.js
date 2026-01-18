@@ -314,8 +314,93 @@ window.onclick = function (event) {
     }
 }
 
-// Navigation
+// NAVIGATION REFRESH PROTECTION
+// Ensures cart is always accurate when using Back/Forward buttons
+window.addEventListener('pageshow', (event) => {
+    console.log("Page visibility change detected.");
 
+    // Refresh local state from storage
+    cart = JSON.parse(localStorage.getItem('shireen_cart') || '[]');
+    updateCartCount();
+
+    // If cart modal is open, refresh it
+    if (cartModal && cartModal.classList.contains('active')) {
+        renderCart();
+    }
+
+    // "Each page should always reload when we move back or move forward to it"
+    // event.persisted is true if the page was restored from bfcache
+    if (event.persisted) {
+        console.log("Restored from bfcache, forcing reload...");
+        window.location.reload();
+    }
+});
+
+// NAVIGATION
+function goBack() {
+    // If there is history within the same site, go back
+    const hostname = window.location.hostname;
+    const referrer = document.referrer;
+
+    // If we have a hostname, check if referrer includes it
+    // If we are local (no hostname), check if referrer is also a local file
+    const isSameSite = referrer && (
+        (hostname && referrer.includes(hostname)) ||
+        (!hostname && referrer.startsWith('file://'))
+    );
+
+    if (isSameSite) {
+        window.history.back();
+    } else {
+        window.location.href = 'index.html';
+    }
+}
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar-menu');
+    const backBtn = document.querySelector('.back-btn');
+    const overlay = document.querySelector('.sidebar-overlay');
+
+    if (sidebar) {
+        sidebar.classList.toggle('active');
+        const isActive = sidebar.classList.contains('active');
+
+        // Handle overlay visibility if it exists
+        if (overlay) {
+            if (isActive) overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.style.opacity = isActive ? '1' : '0';
+                overlay.style.visibility = isActive ? 'visible' : 'hidden';
+            }, 10);
+        }
+
+        // Toggle back button visibility
+        if (backBtn) {
+            if (isActive) {
+                backBtn.classList.add('sidebar-active');
+            } else {
+                backBtn.classList.remove('sidebar-active');
+            }
+        }
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.querySelector('.sidebar-menu');
+    const backBtn = document.querySelector('.back-btn');
+    const overlay = document.querySelector('.sidebar-overlay');
+
+    if (sidebar) {
+        sidebar.classList.remove('active');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.visibility = 'hidden';
+        }
+        if (backBtn) {
+            backBtn.classList.remove('sidebar-active');
+        }
+    }
+}
 
 // Close Promotional Popup
 function closePromo() {

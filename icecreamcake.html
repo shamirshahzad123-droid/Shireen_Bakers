@@ -20,14 +20,13 @@
         <div class="container header-grid">
             <!-- Left: Hamburger -->
             <div class="header-left">
-                <button class="hamburger-btn"
-                    onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">
+                <button class="back-btn" onclick="goBack()" title="Go Back">←</button>
+                <button class="hamburger-btn" onclick="toggleSidebar()">
                     ☰
                 </button>
 
                 <nav class="sidebar-menu">
-                    <button class="close-sidebar-btn"
-                        onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+                    <button class="close-sidebar-btn" onclick="closeSidebar()">×</button>
                     <div class="sidebar-links">
                         <a href="index.html" class="main-link">Menu</a>
                         <a href="location.html?view=map" class="main-link">Locations</a>
@@ -55,8 +54,7 @@
                         <a href="gifting.html">Gifting</a>
                     </div>
                 </nav>
-                <div class="sidebar-overlay"
-                    onclick="document.querySelector('.sidebar-menu').classList.remove('active')">
+                <div class="sidebar-overlay" onclick="closeSidebar()">
                 </div>
                 <nav class="inline-nav">
                     <a href="cakes.html">Cakes</a>
@@ -70,7 +68,8 @@
             <!-- Center: Logo -->
             <div class="header-center">
                 <div class="logo">
-                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="header-logo-img">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo"
+                        class="header-logo-img">
                     Shireen <span>Bakers</span>
                 </div>
             </div>
@@ -102,7 +101,8 @@
         <div class="products-grid">
             <!-- Item 1 -->
             <div class="product-card scroll-reveal" data-base-price="1195">
-                <div class="product-img"><img loading="lazy" src="images/vanillaicecream.webp" alt="Ice Cream Cake 1"></div>
+                <div class="product-img"><img loading="lazy" src="images/vanillaicecream.webp" alt="Ice Cream Cake 1">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Vanilla Ice Cream Cake</div>
                     <div class="product-price">Rs. 1195</div>
@@ -118,7 +118,8 @@
 
             <!-- Item 2 -->
             <div class="product-card scroll-reveal" data-base-price="1295">
-                <div class="product-img"><img loading="lazy" src="images/choclateicecream.webp" alt="Ice Cream Cake 2"></div>
+                <div class="product-img"><img loading="lazy" src="images/choclateicecream.webp" alt="Ice Cream Cake 2">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Chocolate Fudge Ice Cream Cake</div>
                     <div class="product-price">Rs. 1295</div>
@@ -134,7 +135,8 @@
 
             <!-- Item 3 -->
             <div class="product-card scroll-reveal" data-base-price="1195">
-                <div class="product-img"><img loading="lazy" src="images/strawberryicecream.webp" alt="Ice Cream Cake 3"></div>
+                <div class="product-img"><img loading="lazy" src="images/strawberryicecream.webp"
+                        alt="Ice Cream Cake 3"></div>
                 <div class="product-details">
                     <div class="product-name">Strawberry Ice Cream Cake</div>
                     <div class="product-price">Rs. 1195</div>
@@ -166,7 +168,8 @@
 
             <!-- Item 5 -->
             <div class="product-card scroll-reveal" data-base-price="1395">
-                <div class="product-img"><img loading="lazy" src="images/pistaicecream.webp" alt="Ice Cream Cake 5"></div>
+                <div class="product-img"><img loading="lazy" src="images/pistaicecream.webp" alt="Ice Cream Cake 5">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Pistachio Ice Cream Cake</div>
                     <div class="product-price">Rs. 1395</div>
@@ -182,7 +185,8 @@
 
             <!-- Item 6 -->
             <div class="product-card scroll-reveal" data-base-price="1195">
-                <div class="product-img"><img loading="lazy" src="images/mangoicecream.webp" alt="Ice Cream Cake 6"></div>
+                <div class="product-img"><img loading="lazy" src="images/mangoicecream.webp" alt="Ice Cream Cake 6">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Mango Ice Cream Cake</div>
                     <div class="product-price">Rs. 1195</div>
@@ -198,7 +202,8 @@
 
             <!-- Item 7 -->
             <div class="product-card scroll-reveal" data-base-price="1295">
-                <div class="product-img"><img loading="lazy" src="images/coffeeicecream.webp" alt="Ice Cream Cake 7"></div>
+                <div class="product-img"><img loading="lazy" src="images/coffeeicecream.webp" alt="Ice Cream Cake 7">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Coffee Ice Cream Cake</div>
                     <div class="product-price">Rs. 1300</div>
@@ -214,7 +219,8 @@
 
             <!-- Item 8 -->
             <div class="product-card scroll-reveal" data-base-price="1245">
-                <div class="product-img"><img loading="lazy" src="images/tuttifruitti.webp" alt="Ice Cream Cake 8"></div>
+                <div class="product-img"><img loading="lazy" src="images/tuttifruitti.webp" alt="Ice Cream Cake 8">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Tutti Frutti Ice Cream Cake</div>
                     <div class="product-price">Rs. 1245</div>
@@ -230,7 +236,8 @@
 
             <!-- Item 9 -->
             <div class="product-card scroll-reveal" data-base-price="1345">
-                <div class="product-img"><img loading="lazy" src="images/kulfaicecream.webp" alt="Ice Cream Cake 9"></div>
+                <div class="product-img"><img loading="lazy" src="images/kulfaicecream.webp" alt="Ice Cream Cake 9">
+                </div>
                 <div class="product-details">
                     <div class="product-name">Kulfa Ice Cream Cake</div>
                     <div class="product-price">Rs. 1345</div>
@@ -246,7 +253,8 @@
 
             <!-- Item 10 -->
             <div class="product-card scroll-reveal" data-base-price="1395">
-                <div class="product-img"><img loading="lazy" src="images/blueberryicecream.webp" alt="Ice Cream Cake 10"></div>
+                <div class="product-img"><img loading="lazy" src="images/blueberryicecream.webp"
+                        alt="Ice Cream Cake 10"></div>
                 <div class="product-details">
                     <div class="product-name">Blueberry Ice Cream Cake</div>
                     <div class="product-price">Rs. 1395</div>
@@ -268,7 +276,8 @@
         <div class="container">
             <div class="footer-top">
                 <div class="footer-logo">
-                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="footer-logo-img">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo"
+                        class="footer-logo-img">
                     Shireen <span>BAKERS</span>
                 </div>
                 <div class="footer-socials">

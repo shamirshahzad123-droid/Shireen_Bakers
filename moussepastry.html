@@ -19,13 +19,13 @@
     <div class="container header-grid">
       <!-- Left: Hamburger -->
       <div class="header-left">
-        <button class="hamburger-btn" onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">
+        <button class="back-btn" onclick="goBack()" title="Go Back">←</button>
+        <button class="hamburger-btn" onclick="toggleSidebar()">
           ☰
         </button>
 
         <nav class="sidebar-menu">
-          <button class="close-sidebar-btn"
-            onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+          <button class="close-sidebar-btn" onclick="closeSidebar()">×</button>
           <div class="sidebar-links">
             <a href="index.html" class="main-link">Menu</a>
             <a href="location.html?view=map" class="main-link">Locations</a>
@@ -53,7 +53,7 @@
             <a href="gifting.html">Gifting</a>
           </div>
         </nav>
-        <div class="sidebar-overlay" onclick="document.querySelector('.sidebar-menu').classList.remove('active')">
+        <div class="sidebar-overlay" onclick="closeSidebar()">
         </div>
         <nav class="inline-nav">
           <a href="cakes.html">Cakes</a>
@@ -111,7 +111,8 @@
 
       <!-- Item 2 -->
       <div class="product-card scroll-reveal">
-        <div class="product-img"><img loading="lazy" src="images/choclatecheesemoussepastry.webp" alt="Mousse Pastry 2"></div>
+        <div class="product-img"><img loading="lazy" src="images/choclatecheesemoussepastry.webp" alt="Mousse Pastry 2">
+        </div>
         <div class="product-details">
           <div class="product-name">Mousse Cheese Chocolate Pastry</div>
           <div class="product-price">Rs. 150</div>
@@ -144,7 +145,8 @@
 
       <!-- Item 5 -->
       <div class="product-card scroll-reveal">
-        <div class="product-img"><img loading="lazy" src="images/choclatebrownierollpastry.webp" alt="Mousse Pastry 5"></div>
+        <div class="product-img"><img loading="lazy" src="images/choclatebrownierollpastry.webp" alt="Mousse Pastry 5">
+        </div>
         <div class="product-details">
           <div class="product-name">Chocolate Brownie Roll Pastry</div>
           <div class="product-price">Rs. 150</div>
@@ -155,7 +157,8 @@
 
       <!-- Item 6 -->
       <div class="product-card scroll-reveal">
-        <div class="product-img"><img loading="lazy" src="images/choclatesyrupmoussepastry.webp" alt="Mousse Pastry 6"></div>
+        <div class="product-img"><img loading="lazy" src="images/choclatesyrupmoussepastry.webp" alt="Mousse Pastry 6">
+        </div>
         <div class="product-details">
           <div class="product-name">Chocolate Syrup Pastry</div>
           <div class="product-price">Rs. 150</div>

@@ -326,13 +326,12 @@
     <header class="header">
         <div class="container header-grid">
             <div class="header-left">
-                <button class="hamburger-btn"
-                    onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">
+                <button class="back-btn" onclick="goBack()" title="Go Back">←</button>
+                <button class="hamburger-btn" onclick="toggleSidebar()">
                     ☰
                 </button>
                 <nav class="sidebar-menu">
-                    <button class="close-sidebar-btn"
-                        onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+                    <button class="close-sidebar-btn" onclick="closeSidebar()">×</button>
                     <div class="sidebar-links">
                         <a href="index.html" class="main-link">Home</a>
                         <a href="index.html" class="main-link">Menu</a>
@@ -359,8 +358,7 @@
                         <a href="gifting.html">Gifting</a>
                     </div>
                 </nav>
-                <div class="sidebar-overlay"
-                    onclick="document.querySelector('.sidebar-menu').classList.remove('active')">
+                <div class="sidebar-overlay" onclick="closeSidebar()">
                 </div>
                 <nav class="inline-nav">
                     <a href="cakes.html">Cakes</a>

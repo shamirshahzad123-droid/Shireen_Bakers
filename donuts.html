@@ -20,14 +20,13 @@
         <div class="container header-grid">
             <!-- Left: Hamburger -->
             <div class="header-left">
-                <button class="hamburger-btn"
-                    onclick="document.querySelector('.sidebar-menu').classList.toggle('active')">
+                <button class="back-btn" onclick="goBack()" title="Go Back">←</button>
+                <button class="hamburger-btn" onclick="toggleSidebar()">
                     ☰
                 </button>
 
                 <nav class="sidebar-menu">
-                    <button class="close-sidebar-btn"
-                        onclick="document.querySelector('.sidebar-menu').classList.remove('active')">×</button>
+                    <button class="close-sidebar-btn" onclick="closeSidebar()">×</button>
                     <div class="sidebar-links">
                         <a href="index.html" class="main-link">Menu</a>
                         <a href="location.html?view=map" class="main-link">Locations</a>
@@ -55,8 +54,7 @@
                         <a href="gifting.html">Gifting</a>
                     </div>
                 </nav>
-                <div class="sidebar-overlay"
-                    onclick="document.querySelector('.sidebar-menu').classList.remove('active')">
+                <div class="sidebar-overlay" onclick="closeSidebar()">
                 </div>
                 <nav class="inline-nav">
                     <a href="cakes.html">Cakes</a>
@@ -70,7 +68,8 @@
             <!-- Center: Logo -->
             <div class="header-center">
                 <div class="logo">
-                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="header-logo-img">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo"
+                        class="header-logo-img">
                     Shireen <span>Bakers</span>
                 </div>
             </div>
@@ -123,7 +122,8 @@
             <!-- Item 2 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="150">
-                    <div class="product-img"><img loading="lazy" src="images/choclatefrosteddonut.webp" alt="Chocolate Donut"></div>
+                    <div class="product-img"><img loading="lazy" src="images/choclatefrosteddonut.webp"
+                            alt="Chocolate Donut"></div>
                     <div class="product-details">
                         <div class="product-name">Chocolate Frosted</div>
                         <div class="product-price">Rs. 150</div>
@@ -140,7 +140,8 @@
             <!-- Item 3 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="150">
-                    <div class="product-img"><img loading="lazy" src="images/strawberrysprinkledonut.webp" alt="Strawberry Donut"></div>
+                    <div class="product-img"><img loading="lazy" src="images/strawberrysprinkledonut.webp"
+                            alt="Strawberry Donut"></div>
                     <div class="product-details">
                         <div class="product-name">Strawberry Sprinkles</div>
                         <div class="product-price">Rs. 150</div>
@@ -157,7 +158,8 @@
             <!-- Item 4 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="150">
-                    <div class="product-img"><img loading="lazy" src="images/cinnamonsugardonut.webp" alt="Cinnamon Donut"></div>
+                    <div class="product-img"><img loading="lazy" src="images/cinnamonsugardonut.webp"
+                            alt="Cinnamon Donut"></div>
                     <div class="product-details">
                         <div class="product-name">Cinnamon Sugar</div>
                         <div class="product-price">Rs. 150</div>
@@ -176,7 +178,8 @@
             <!-- Item 5 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="200">
-                    <div class="product-img"><img loading="lazy" src="images/bostoncreamfilleddonuts.webp" alt="Boston Cream Donut">
+                    <div class="product-img"><img loading="lazy" src="images/bostoncreamfilleddonuts.webp"
+                            alt="Boston Cream Donut">
                     </div>
                     <div class="product-details">
                         <div class="product-name">Boston Cream (Filled)</div>
@@ -194,7 +197,8 @@
             <!-- Item 6 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="200">
-                    <div class="product-img"><img loading="lazy" src="images/raspberryfilleddonut.webp" alt="Jelly Donut"></div>
+                    <div class="product-img"><img loading="lazy" src="images/raspberryfilleddonut.webp"
+                            alt="Jelly Donut"></div>
                     <div class="product-details">
                         <div class="product-name">Raspberry Jelly (Filled)</div>
                         <div class="product-price">Rs. 200</div>
@@ -211,7 +215,8 @@
             <!-- Item 7 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="200">
-                    <div class="product-img"><img loading="lazy" src="images/nutellafilleddonut.webp" alt="Nutella Donut"></div>
+                    <div class="product-img"><img loading="lazy" src="images/nutellafilleddonut.webp"
+                            alt="Nutella Donut"></div>
                     <div class="product-details">
                         <div class="product-name">Nutella Dream (Filled)</div>
                         <div class="product-price">Rs. 200</div>
@@ -228,7 +233,8 @@
             <!-- Item 8 -->
             <div class="col scroll-reveal">
                 <div class="product-card scroll-reveal" data-base-price="200">
-                    <div class="product-img"><img loading="lazy" src="images/vanillafilleddonut.webp" alt="Custard Donut"></div>
+                    <div class="product-img"><img loading="lazy" src="images/vanillafilleddonut.webp"
+                            alt="Custard Donut"></div>
                     <div class="product-details">
                         <div class="product-name">Vanilla Custard (Filled)</div>
                         <div class="product-price">Rs. 200</div>
@@ -250,7 +256,8 @@
         <div class="container">
             <div class="footer-top">
                 <div class="footer-logo">
-                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo" class="footer-logo-img">
+                    <img loading="lazy" src="images/logo_transparent.webp" alt="Shireen Bakers Logo"
+                        class="footer-logo-img">
                     Shireen <span>BAKERS</span>
                 </div>
                 <div class="footer-socials">

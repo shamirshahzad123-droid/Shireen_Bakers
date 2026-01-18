@@ -525,10 +525,40 @@ img {
     margin: 10px 0;
 }
 
+/* Back Button Styling */
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+    margin-right: 15px;
+    /* Space between back arrow and ☰ */
+    z-index: 1001;
+    line-height: 1;
+}
+
+.back-btn:hover {
+    color: var(--primary-red);
+    transform: translateX(-3px);
+}
+
+/* Hide back button when sidebar is active */
+.back-btn.sidebar-active {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
 /* Adjust Hamburger Position */
 .hamburger-btn {
-    transform: translateX(-10px);
-    /* Move a little left */
+    transform: none;
+    /* Reset individual transform to handle in row */
 }
 
 /* Header Center: Logo */
