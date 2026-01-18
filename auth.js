@@ -366,11 +366,12 @@ function signInWithGoogle() {
 
         // Set blocking flags
         socialLoginInProgress = true;
-        sessionStorage.setItem('isSocialLogin', 'true');
-        sessionStorage.setItem('googleSignInAttempt', Date.now().toString());
+        localStorage.setItem('isSocialLogin', 'true');
+        localStorage.setItem('googleSignInAttempt', Date.now().toString());
 
         const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
         console.log(`🔵 Device type: ${isMobile ? 'Mobile' : 'Desktop'}`);
+        alert(`DEBUG: Flags set - isSocial: ${localStorage.getItem('isSocialLogin')}, isMobile: ${isMobile}`); // CONFIRMATION ALERT
 
         // MOBILE: Use redirect to avoid popup blockers
         if (isMobile) {
@@ -387,15 +388,17 @@ function signInWithGoogle() {
         `;
 
             // Set flag for redirect detection
-            sessionStorage.setItem('googleRedirectPending', 'true');
-            sessionStorage.setItem('redirectStartTime', Date.now().toString());
+            localStorage.setItem('googleRedirectPending', 'true');
+            localStorage.setItem('redirectStartTime', Date.now().toString());
+
+            alert("DEBUG: About to Redirect. Origin: " + window.location.origin); // ORIGIN ALERT
 
             // Redirect to Google - this will navigate away from the page
             return auth.signInWithRedirect(provider)
                 .catch((error) => {
                     console.error("❌ Redirect initiation error:", error);
-                    sessionStorage.removeItem('isSocialLogin');
-                    sessionStorage.removeItem('googleRedirectPending');
+                    localStorage.removeItem('isSocialLogin');
+                    localStorage.removeItem('googleRedirectPending');
                     removeLoading();
 
                     let errorMessage = `Redirect failed: ${error.message}`;
@@ -423,8 +426,8 @@ function signInWithGoogle() {
                         .then(() => {
                             console.log("✅ Firestore sync complete!");
                             socialLoginInProgress = false;
-                            sessionStorage.removeItem('isSocialLogin');
-                            sessionStorage.setItem('googleSignInSuccess', 'true');
+                            localStorage.removeItem('isSocialLogin');
+                            localStorage.setItem('googleSignInSuccess', 'true');
 
                             removeLoading();
                             alert('Google Sign-In successful! Redirecting...');
@@ -453,6 +456,9 @@ function signInWithGoogle() {
                         error.code === 'auth/cancelled-popup-request' ||
                         error.code === 'auth/user-cancelled') {
                         console.log("ℹ️ User cancelled");
+                        socialLoginInProgress = false;
+                        localStorage.removeItem('isSocialLogin');
+                        removeLoading();
                         return Promise.reject(error);
                     }
 
@@ -488,27 +494,27 @@ function signInWithGoogle() {
 // This runs on EVERY page load, so we wrap it in DOMContentLoaded to ensure Firebase is ready
 document.addEventListener('DOMContentLoaded', () => {
     // DIAGNOSTIC ALERT
-    const isSocial = sessionStorage.getItem('isSocialLogin');
-    const isPending = sessionStorage.getItem('googleRedirectPending');
-    alert(`DEBUG: Load - isSocial: ${isSocial}, isPending: ${isPending}, url: ${window.location.search}`);
+    const isSocial = localStorage.getItem('isSocialLogin');
+    const isPending = localStorage.getItem('googleRedirectPending');
+    alert(`DEBUG: Load - isSocial: ${isSocial}, isPending: ${isPending}, url: ${window.location.search}, origin: ${window.location.origin}`);
 
-    // Only process redirect if we're likely returning from one
-    const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token') || window.location.hash.includes('id_token');
+    // Always try checking if we have flags OR if the URL looks like a return trip
+    const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token');
 
     if (possibleRedirect || window.location.search.includes('code=')) {
-        alert("DEBUG: Page loaded. Checking for redirect result..."); // NEW ALERT
         console.log("Checking for redirect result...");
+        alert("DEBUG: Calling getRedirectResult now..."); // CHECK ALERT
 
         auth.getRedirectResult()
             .then((result) => {
                 if (result && result.user) {
-                    alert("DEBUG: Redirect SUCCESS! User: " + result.user.email); // NEW ALERT
+                    alert("DEBUG: Redirect SUCCESS! User: " + result.user.email);
                     console.log("✅ Redirect success. User:", result.user.email);
-                    sessionStorage.setItem('redirectSuccess', 'true');
+                    localStorage.setItem('redirectSuccess', 'true');
 
                     return syncUserToFirestore(result.user).then(() => {
-                        sessionStorage.removeItem('isSocialLogin');
-                        sessionStorage.removeItem('googleRedirectPending');
+                        localStorage.removeItem('isSocialLogin');
+                        localStorage.removeItem('googleRedirectPending');
 
                         // Show success message briefly before redirecting
                         const message = document.createElement('div');
