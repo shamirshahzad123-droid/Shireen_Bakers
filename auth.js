@@ -493,24 +493,19 @@ function signInWithGoogle() {
 // Handle redirect result (for mobile users returning to page)
 // This runs on EVERY page load, so we wrap it in DOMContentLoaded to ensure Firebase is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // DIAGNOSTIC ALERT
+    // DIAGNOSTIC FLAGS
     const isSocial = localStorage.getItem('isSocialLogin');
     const isPending = localStorage.getItem('googleRedirectPending');
-    alert(`DEBUG: Load - isSocial: ${isSocial}, isPending: ${isPending}, url: ${window.location.search}, origin: ${window.location.origin}`);
+
+    // FIX: Define possibleRedirect (this was missing before)
+    const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token');
 
     if (possibleRedirect || window.location.search.includes('code=')) {
-        const startOrigin = localStorage.getItem('startOrigin');
-        const currentOrigin = window.location.origin;
-
-        alert(`DEBUG: Return Page.\nStart Origin recorded: ${startOrigin}\nCurrent Origin: ${currentOrigin}\nMatch: ${startOrigin === currentOrigin}`);
-
         console.log("Checking for redirect result...");
-        alert("DEBUG: Calling getRedirectResult now...");
 
         auth.getRedirectResult()
             .then((result) => {
                 if (result && result.user) {
-                    alert("DEBUG: Redirect SUCCESS! User: " + result.user.email);
                     console.log("✅ Redirect success. User:", result.user.email);
                     localStorage.setItem('redirectSuccess', 'true');
 
@@ -538,38 +533,23 @@ document.addEventListener('DOMContentLoaded', () => {
                             window.location.href = 'index.html';
                         }, 1500);
                     });
-                } else if (possibleRedirect) {
+                } else {
                     // We expected a redirect but got nothing - clear flags
-                    alert("DEBUG: getRedirectResult returned NULL (No User Found)");
                     console.log("No redirect result found, clearing flags...");
                     localStorage.removeItem('isSocialLogin');
                     localStorage.removeItem('googleRedirectPending');
                 }
             })
             .catch((error) => {
-                alert("DEBUG: Redirect ERROR: " + error.message);
                 console.error("❌ Redirect auth error:", error.code, error.message);
                 localStorage.removeItem('isSocialLogin');
                 localStorage.removeItem('googleRedirectPending');
 
-                // Show user-friendly error message
-                let errorMsg = "Google Sign-In failed. Please try again.";
-
+                // Show alert for unauthorized domain which is a common failure point
                 if (error.code === 'auth/unauthorized-domain') {
-                    errorMsg = "Domain Error: This website's domain needs to be authorized in Firebase. Please contact support.";
-                } else if (error.code === 'auth/account-exists-with-different-credential') {
-                    errorMsg = "This email is already registered with a password. Please use email/password login.";
-                } else if (error.code === 'auth/popup-blocked') {
-                    errorMsg = "Pop-up was blocked. Please allow pop-ups for this site.";
-                } else if (error.code === 'auth/cancelled-popup-request') {
-                    // User cancelled, don't show error
-                    return;
-                } else if (error.message) {
-                    errorMsg = `Sign-in error: ${error.message}`;
-                }
-
-                if (errorMsg) {
-                    alert(errorMsg);
+                    alert("DOMAIN ERROR: Please add your domain to Firebase Console > Auth > Settings > Authorized Domains.");
+                } else if (error.code !== 'auth/cancelled-popup-request') {
+                    alert("Sign-in error: " + error.message);
                 }
             });
     }
