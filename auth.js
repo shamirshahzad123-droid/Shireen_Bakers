@@ -391,6 +391,10 @@ function signInWithGoogle() {
             // Set flag for redirect detection
             localStorage.setItem('googleRedirectPending', 'true');
             localStorage.setItem('redirectStartTime', Date.now().toString());
+            localStorage.setItem('originalPageUrl', window.location.href);
+
+            console.log("🔵 Setting redirect flags. Current URL: " + window.location.origin);
+            console.log("🔵 Auth domain from config: " + firebaseConfig.authDomain);
 
             alert("DEBUG: About to Redirect. Origin: " + window.location.origin); // ORIGIN ALERT
 
@@ -398,18 +402,24 @@ function signInWithGoogle() {
             return auth.signInWithRedirect(provider)
                 .catch((error) => {
                     console.error("❌ Redirect initiation error:", error);
+                    console.error("Error code:", error.code);
+                    console.error("Error message:", error.message);
                     localStorage.removeItem('isSocialLogin');
                     localStorage.removeItem('googleRedirectPending');
+                    localStorage.removeItem('redirectStartTime');
                     removeLoading();
 
                     let errorMessage = `Redirect failed: ${error.message}`;
                     if (error.code === 'auth/unauthorized-domain') {
-                        errorMessage = "⚠️ Domain Error\n\nYour domain is not authorized.\n\nFix: Add your domain in Firebase Console → Authentication → Settings → Authorized domains";
+                        errorMessage = "⚠️ DOMAIN NOT AUTHORIZED\n\nYour domain needs to be added to Firebase.\n\nFix:\n1. Go to Firebase Console\n2. Click Authentication\n3. Go to Settings → Authorized domains\n4. Add your current domain: " + window.location.hostname;
+                    } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
+                        errorMessage = "⚠️ AUTHENTICATION NOT SUPPORTED\n\nYour device/browser may not support this method.\n\nTry:\n1. Refreshing the page\n2. Using a different browser\n3. Clearing your browser cache";
                     } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
                         errorMessage = "⚠️ OAuth Not Published\n\nYour app is in testing mode.\n\nFix: Publish your app in Google Cloud Console → APIs & Services → OAuth consent screen → PUBLISH APP";
                     }
 
                     alert(errorMessage);
+                    console.error("Full error object:", error);
                     throw error;
                 });
         }
@@ -492,20 +502,35 @@ function signInWithGoogle() {
 
 
 // Handle redirect result (for mobile users returning to page)
-// This runs on EVERY page load, so we wrap it in DOMContentLoaded to ensure Firebase is ready
-document.addEventListener('DOMContentLoaded', () => {
+// This needs to run BEFORE DOMContentLoaded to catch the redirect early
+function handleGoogleRedirectResult() {
+    console.log("🔵 Checking for Google redirect result...");
+    
     // DIAGNOSTIC FLAGS
     const isSocial = localStorage.getItem('isSocialLogin');
     const isPending = localStorage.getItem('googleRedirectPending');
+    const redirectStartTime = localStorage.getItem('redirectStartTime');
 
     // FIX: Define possibleRedirect
     const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token');
 
     if (possibleRedirect || window.location.search.includes('code=')) {
-        console.log("Checking for redirect result...");
+        console.log("🔵 Redirect detected, calling getRedirectResult...");
+
+        // Set a timeout to check again if redirect takes too long
+        const checkTimeout = setTimeout(() => {
+            const stillPending = localStorage.getItem('googleRedirectPending');
+            if (stillPending === 'true') {
+                console.warn("⚠️ Google redirect took too long. Clearing flags to avoid infinite loop.");
+                localStorage.removeItem('googleRedirectPending');
+                localStorage.removeItem('isSocialLogin');
+            }
+        }, 10000); // 10 second timeout
 
         auth.getRedirectResult()
             .then((result) => {
+                clearTimeout(checkTimeout);
+                
                 if (result && result.user) {
                     console.log("✅ Redirect success. User:", result.user.email);
                     localStorage.setItem('redirectSuccess', 'true');
@@ -513,6 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return syncUserToFirestore(result.user).then(() => {
                         localStorage.removeItem('isSocialLogin');
                         localStorage.removeItem('googleRedirectPending');
+                        localStorage.removeItem('redirectStartTime');
 
                         // Show success message briefly before redirecting
                         const message = document.createElement('div');
@@ -535,26 +561,40 @@ document.addEventListener('DOMContentLoaded', () => {
                         }, 1500);
                     });
                 } else {
-                    // We expected a redirect but got nothing - clear flags
-                    console.log("No redirect result found, clearing flags...");
+                    // We expected a redirect but got nothing
+                    console.log("ℹ️ No redirect result found");
                     localStorage.removeItem('isSocialLogin');
                     localStorage.removeItem('googleRedirectPending');
+                    localStorage.removeItem('redirectStartTime');
                 }
             })
             .catch((error) => {
+                clearTimeout(checkTimeout);
                 console.error("❌ Redirect auth error:", error.code, error.message);
                 localStorage.removeItem('isSocialLogin');
                 localStorage.removeItem('googleRedirectPending');
+                localStorage.removeItem('redirectStartTime');
 
                 // Show alert for unauthorized domain which is a common failure point
                 if (error.code === 'auth/unauthorized-domain') {
-                    alert("DOMAIN ERROR: Please add your domain to Firebase Console > Auth > Settings > Authorized Domains.");
-                } else if (error.code !== 'auth/cancelled-popup-request') {
+                    alert("⚠️ DOMAIN NOT AUTHORIZED\n\nFix: Go to Firebase Console > Authentication > Settings > Authorized domains\n\nAdd your domain there.");
+                } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
+                    alert("⚠️ REDIRECT NOT SUPPORTED\n\nYou may need to use a different authentication method on this device.");
+                } else if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
                     alert("Sign-in error: " + error.message);
                 }
             });
     }
-});
+}
+
+// Run redirect handler as soon as Firebase is ready (before DOMContentLoaded)
+if (document.readyState === 'loading') {
+    // Firebase initialization may still be in progress
+    document.addEventListener('DOMContentLoaded', handleGoogleRedirectResult);
+} else {
+    // DOM is already loaded
+    handleGoogleRedirectResult();
+}
 
 /**
  * PASSWORD RESET
