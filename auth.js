@@ -320,23 +320,9 @@ function signInWithGoogle() {
     try {
         // Check if running from file system
         if (window.location.protocol === 'file:') {
-            alert("Error: Opening file directly. usage of local server required.");
+            alert("Error: Opening file directly. Usage of local server required.");
             return;
         }
-
-        alert("DEBUG: signInWithGoogle started"); // NEW ALERT
-
-        // DEBUG: Verify auth object exists
-        if (!firebase || !firebase.auth) {
-            alert("CRITICAL ERROR: Firebase SDK not loaded!");
-            return;
-        }
-        if (!auth) {
-            alert("CRITICAL ERROR: 'auth' object is undefined. Check firebase-config.js");
-            return;
-        }
-
-        // alert("DEBUG: Starting Sign-In..."); // Uncomment if needed
 
         console.log("🔵 Initiating Google Sign-In...");
 
