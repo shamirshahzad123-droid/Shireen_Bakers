@@ -374,61 +374,10 @@ function signInWithGoogle() {
         const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
         console.log(`🔵 Device type: ${isMobile ? 'Mobile' : 'Desktop'}`);
 
-        // MOBILE: Use redirect to avoid popup blockers
-        if (isMobile) {
-            alert("DEBUG: Mobile flow detected. Redirecting..."); // NEW ALERT
-            console.log("🔵 Mobile detected - Using REDIRECT flow to avoid popup blockers");
+        // Use popup for BOTH mobile and desktop (more reliable than redirect)
+        console.log("🔵 Using POPUP flow for Google Sign-In");
 
-            // Update loading message for redirect
-            loadingOverlay.innerHTML = `
-            <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px;">
-                <div style="font-size: 2.5rem; margin-bottom: 15px;">🔄</div>
-                <div style="font-size: 1.2rem; color: #333; margin-bottom: 10px;">Redirecting to Google...</div>
-                <div style="font-size: 0.85rem; color: #666;">You'll be taken to Google's sign-in page</div>
-            </div>
-        `;
-
-            // Set flag for redirect detection
-            localStorage.setItem('googleRedirectPending', 'true');
-            localStorage.setItem('redirectStartTime', Date.now().toString());
-            localStorage.setItem('originalPageUrl', window.location.href);
-
-            console.log("🔵 Setting redirect flags. Current URL: " + window.location.origin);
-            console.log("🔵 Auth domain from config: " + firebaseConfig.authDomain);
-
-            alert("DEBUG: About to Redirect. Origin: " + window.location.origin); // ORIGIN ALERT
-
-            // Redirect to Google - this will navigate away from the page
-            return auth.signInWithRedirect(provider)
-                .catch((error) => {
-                    console.error("❌ Redirect initiation error:", error);
-                    console.error("Error code:", error.code);
-                    console.error("Error message:", error.message);
-                    localStorage.removeItem('isSocialLogin');
-                    localStorage.removeItem('googleRedirectPending');
-                    localStorage.removeItem('redirectStartTime');
-                    removeLoading();
-
-                    let errorMessage = `Redirect failed: ${error.message}`;
-                    if (error.code === 'auth/unauthorized-domain') {
-                        errorMessage = "⚠️ DOMAIN NOT AUTHORIZED\n\nYour domain needs to be added to Firebase.\n\nFix:\n1. Go to Firebase Console\n2. Click Authentication\n3. Go to Settings → Authorized domains\n4. Add your current domain: " + window.location.hostname;
-                    } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
-                        errorMessage = "⚠️ AUTHENTICATION NOT SUPPORTED\n\nYour device/browser may not support this method.\n\nTry:\n1. Refreshing the page\n2. Using a different browser\n3. Clearing your browser cache";
-                    } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
-                        errorMessage = "⚠️ OAuth Not Published\n\nYour app is in testing mode.\n\nFix: Publish your app in Google Cloud Console → APIs & Services → OAuth consent screen → PUBLISH APP";
-                    }
-
-                    alert(errorMessage);
-                    console.error("Full error object:", error);
-                    throw error;
-                });
-        }
-
-        // DESKTOP: Use popup for better UX (no full page redirect)
-        else {
-            console.log("🔵 Desktop detected - Using POPUP flow");
-
-            return auth.signInWithPopup(provider)
+        return auth.signInWithPopup(provider)
                 .then((result) => {
                     console.log("✅ Popup success! User:", result.user.email);
                     console.log("🔵 Starting Firestore sync...");
@@ -459,17 +408,14 @@ function signInWithGoogle() {
                 .catch((error) => {
                     console.error("❌ Popup error:", error.code, error.message);
                     socialLoginInProgress = false;
-                    sessionStorage.removeItem('isSocialLogin');
+                    localStorage.removeItem('isSocialLogin');
                     removeLoading();
 
                     // Silent cancellation
                     if (error.code === 'auth/popup-closed-by-user' ||
                         error.code === 'auth/cancelled-popup-request' ||
                         error.code === 'auth/user-cancelled') {
-                        console.log("ℹ️ User cancelled");
-                        socialLoginInProgress = false;
-                        localStorage.removeItem('isSocialLogin');
-                        removeLoading();
+                        console.log("ℹ️ User cancelled sign-in");
                         return Promise.reject(error);
                     }
 
@@ -479,10 +425,10 @@ function signInWithGoogle() {
 
                     if (error.code === 'auth/unauthorized-domain') {
                         errorTitle = "⚠️ Domain Not Authorized";
-                        errorMessage = `Add your domain in Firebase Console:\nAuthentication → Settings → Authorized domains`;
+                        errorMessage = `Add your domain in Firebase Console:\nAuthentication → Settings → Authorized domains\n\nDomain: ${window.location.hostname}`;
                     } else if (error.code === 'auth/popup-blocked') {
                         errorTitle = "⚠️ Pop-up Blocked";
-                        errorMessage = `Please allow popups for this site`;
+                        errorMessage = `Your browser blocked the sign-in popup.\n\nPlease:\n1. Enable popups for this site\n2. Try again`;
                     } else if (error.message.includes('OAuth') || error.message.includes('developer')) {
                         errorTitle = "⚠️ OAuth Not Published";
                         errorMessage = `Go to Google Cloud Console:\nAPIs & Services → OAuth consent screen → PUBLISH APP`;
@@ -493,7 +439,6 @@ function signInWithGoogle() {
                     alert(`${errorTitle}\n\n${errorMessage}`);
                     throw error;
                 });
-        }
     } catch (error) {
         console.error("CRITICAL ERROR in signInWithGoogle:", error);
         alert(`Critical Error: ${error.message}`);
