@@ -7,12 +7,13 @@ console.log("Auth script loaded. Waiting for Firebase initialization...");
 function updateUIForLoggedInUser(user) {
     const loginBtn = document.querySelector('.header-right .icon-btn:first-child');
     if (loginBtn) {
-        const name = user.displayName || user.email.split('@')[0];
+        const fullName = user.displayName || user.email.split('@')[0];
+        const firstName = fullName.split(' ')[0]; // Get only first name
         // Using a white SVG icon instead of the emoji
         const userIcon = `<svg class="user-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align: middle; margin-left: 5px;">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
         </svg>`;
-        loginBtn.innerHTML = `<span>${name}</span> ${userIcon}`;
+        loginBtn.innerHTML = `<span>${firstName}</span> ${userIcon}`;
         loginBtn.title = "View Profile";
         loginBtn.onclick = () => showUserProfile();
     }
@@ -97,9 +98,11 @@ function showUserProfile() {
     const user = auth.currentUser;
     if (!user) return;
 
-    document.getElementById('profile-name').textContent = user.displayName || user.email.split('@')[0];
+    const fullName = user.displayName || user.email.split('@')[0];
+    const firstName = fullName.split(' ')[0]; // Get only first name
+    document.getElementById('profile-name').textContent = firstName;
     document.getElementById('profile-email').textContent = user.email;
-    document.getElementById('profile-avatar').textContent = (user.displayName ? user.displayName[0] : user.email[0]).toUpperCase();
+    document.getElementById('profile-avatar').textContent = firstName[0].toUpperCase();
     document.getElementById('profile-modal-overlay').style.display = 'flex';
 }
 
