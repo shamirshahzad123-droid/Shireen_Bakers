@@ -138,7 +138,11 @@ const cartTotalElement = document.getElementById('cart-total');
 // Cart Functions
 function openCart() {
     if (typeof auth !== 'undefined' && !auth.currentUser) {
-        alert("Please login to view your cart!");
+        if (typeof showNotification === 'function') {
+            showNotification("Login to view your cart", 'info');
+        } else {
+            alert("Login to view your cart");
+        }
         window.location.href = 'login.html';
         return;
     }
@@ -156,7 +160,11 @@ function closeCart() {
 
 function addToCart(name, price) {
     if (typeof auth !== 'undefined' && !auth.currentUser) {
-        alert("Please login to add items to the cart!");
+        if (typeof showNotification === 'function') {
+            showNotification("Login to add items to your cart", 'info');
+        } else {
+            alert("Login to add items to your cart");
+        }
         window.location.href = 'login.html';
         return;
     }

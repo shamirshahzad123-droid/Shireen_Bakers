@@ -3,6 +3,41 @@
 // Diagnostic log
 console.log("Auth script loaded. Waiting for Firebase initialization...");
 
+// Custom notification function (replaces browser alerts - more professional)
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        z-index: 10000;
+        max-width: 90%;
+        width: 300px;
+        text-align: center;
+        font-size: 1rem;
+        line-height: 1.5;
+    `;
+    
+    const bgColor = type === 'error' ? '#ffebee' : type === 'success' ? '#e8f5e9' : '#f5f5f5';
+    const borderColor = type === 'error' ? '#e57373' : type === 'success' ? '#81c784' : '#bdbdbd';
+    notification.style.backgroundColor = bgColor;
+    notification.style.borderLeft = `4px solid ${borderColor}`;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
 // Update UI when user is logged in
 function updateUIForLoggedInUser(user) {
     const loginBtn = document.querySelector('.header-right .icon-btn:first-child');
@@ -116,22 +151,22 @@ function handlePasswordChangeRequest() {
     if (!newPass) return;
 
     if (newPass.length < 6) {
-        alert("Password must be at least 6 characters long.");
+        showNotification("Password must be at least 6 characters long.", 'error');
         return;
     }
 
     const user = auth.currentUser;
     user.updatePassword(newPass)
         .then(() => {
-            alert("Password updated successfully!");
+            showNotification("Password updated successfully!", 'success');
             closeProfileModal();
         })
         .catch(error => {
             console.error("Password update error:", error);
             if (error.code === 'auth/requires-recent-login') {
-                alert("Security alert: This action requires a recent login. Please log out and log back in to change your password.");
+                showNotification("This action requires a recent login. Please log out and log back in to change your password.", 'error');
             } else {
-                alert("Error updating password: " + error.message);
+                showNotification("Error updating password: " + error.message, 'error');
             }
         });
 }
@@ -323,7 +358,7 @@ function signInWithGoogle() {
     try {
         // Check if running from file system
         if (window.location.protocol === 'file:') {
-            alert("Error: Opening file directly. Usage of local server required.");
+            showNotification("Error: Open using a local server, not directly.", 'error');
             return;
         }
 
@@ -379,7 +414,7 @@ function signInWithGoogle() {
                             localStorage.setItem('googleSignInSuccess', 'true');
 
                             removeLoading();
-                            alert('Google Sign-In successful! Redirecting...');
+                            showNotification('Google Sign-In successful! Redirecting...', 'success');
 
                             setTimeout(() => {
                                 window.location.href = 'index.html';
@@ -390,7 +425,7 @@ function signInWithGoogle() {
                         .catch((syncError) => {
                             console.error("❌ Firestore sync failed:", syncError);
                             removeLoading();
-                            alert(`Sign-In succeeded but data sync failed: ${syncError.message}`);
+                            showNotification(`Sign-In succeeded but data sync failed: ${syncError.message}`, 'error');
                             throw syncError;
                         });
                 })
@@ -425,12 +460,12 @@ function signInWithGoogle() {
                         errorMessage = `Error: ${error.code}\n${error.message}`;
                     }
 
-                    alert(`${errorTitle}\n\n${errorMessage}`);
+                    showNotification(`${errorTitle}\n\n${errorMessage}`, 'error');
                     throw error;
                 });
     } catch (error) {
         console.error("CRITICAL ERROR in signInWithGoogle:", error);
-        alert(`Critical Error: ${error.message}`);
+        showNotification(`Critical Error: ${error.message}`, 'error');
     }
 }
 
@@ -509,13 +544,13 @@ function handleGoogleRedirectResult() {
                 localStorage.removeItem('googleRedirectPending');
                 localStorage.removeItem('redirectStartTime');
 
-                // Show alert for unauthorized domain which is a common failure point
+                // Show notification for unauthorized domain which is a common failure point
                 if (error.code === 'auth/unauthorized-domain') {
-                    alert("⚠️ DOMAIN NOT AUTHORIZED\n\nFix: Go to Firebase Console > Authentication > Settings > Authorized domains\n\nAdd your domain there.");
+                    showNotification("Domain Not Authorized. Add your domain in Firebase Console > Authentication > Settings > Authorized domains", 'error');
                 } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
-                    alert("⚠️ REDIRECT NOT SUPPORTED\n\nYou may need to use a different authentication method on this device.");
+                    showNotification("Authentication not supported on this device. Try a different browser.", 'error');
                 } else if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
-                    alert("Sign-in error: " + error.message);
+                    showNotification("Sign-in error: " + error.message, 'error');
                 }
             });
     }
@@ -536,7 +571,7 @@ if (document.readyState === 'loading') {
 function resetPassword(email) {
     return auth.sendPasswordResetEmail(email)
         .then(() => {
-            alert("Password reset email sent! Check your inbox.");
+            showNotification("Password reset email sent! Check your inbox.", 'success');
         })
         .catch((error) => {
             console.error("❌ Password reset error:", error);
