@@ -2,105 +2,105 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Primary Pages for this sitemap -->
   <url>
-    <loc>https://www.shireen-bakers.com/index.html</loc>
+    <loc>https://shireen-bakers.com/</loc>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/about.html</loc>
+    <loc>https://shireen-bakers.com/about.html</loc>
     <priority>0.8</priority>
   </url>
   
   <!-- All other pages moved here to keep specific sitemaps clean -->
   <url>
-    <loc>https://www.shireen-bakers.com/contactus.html</loc>
+    <loc>https://shireen-bakers.com/contactus.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/terms.html</loc>
+    <loc>https://shireen-bakers.com/terms.html</loc>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/feedback.html</loc>
+    <loc>https://shireen-bakers.com/feedback.html</loc>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/donuts.html</loc>
+    <loc>https://shireen-bakers.com/donuts.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/gifting.html</loc>
+    <loc>https://shireen-bakers.com/gifting.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/icecream.html</loc>
+    <loc>https://shireen-bakers.com/icecream.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/chocolate.html</loc>
+    <loc>https://shireen-bakers.com/chocolate.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/salad.html</loc>
+    <loc>https://shireen-bakers.com/salad.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/sandwiches.html</loc>
+    <loc>https://shireen-bakers.com/sandwiches.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/snacks.html</loc>
+    <loc>https://shireen-bakers.com/snacks.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/puffs.html</loc>
+    <loc>https://shireen-bakers.com/puffs.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/rusk.html</loc>
+    <loc>https://shireen-bakers.com/rusk.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/biscuits.html</loc>
+    <loc>https://shireen-bakers.com/biscuits.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/cookies&amp;khatai.html</loc>
+    <loc>https://shireen-bakers.com/cookies&amp;khatai.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/nimko.html</loc>
+    <loc>https://shireen-bakers.com/nimko.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/drypastry.html</loc>
+    <loc>https://shireen-bakers.com/drypastry.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/freshcreampastry.html</loc>
+    <loc>https://shireen-bakers.com/freshcreampastry.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/moussepastry.html</loc>
+    <loc>https://shireen-bakers.com/moussepastry.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/puffpastry.html</loc>
+    <loc>https://shireen-bakers.com/puffpastry.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/freshcreamcake.html</loc>
+    <loc>https://shireen-bakers.com/freshcreamcake.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/icecreamcake.html</loc>
+    <loc>https://shireen-bakers.com/icecreamcake.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/moussecakes.html</loc>
+    <loc>https://shireen-bakers.com/moussecakes.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shireen-bakers.com/drycakes.html</loc>
+    <loc>https://shireen-bakers.com/drycakes.html</loc>
     <priority>0.7</priority>
   </url>
 </urlset>
