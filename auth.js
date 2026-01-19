@@ -147,7 +147,9 @@ auth.onAuthStateChanged((user) => {
         // Handle auto-redirect for login/signup pages
         const path = window.location.pathname;
         const isAuthPage = path.endsWith('login.html') || path.endsWith('signup.html');
-        const isSocialFlow = socialLoginInProgress || sessionStorage.getItem('isSocialLogin') === 'true';
+
+        // Use localStorage consistently to detect social flow across redirects
+        const isSocialFlow = socialLoginInProgress || localStorage.getItem('isSocialLogin') === 'true';
 
         if (isAuthPage && !isSocialFlow) {
             console.log("User already logged in, redirecting to home...");
@@ -371,7 +373,6 @@ function signInWithGoogle() {
 
         const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
         console.log(`🔵 Device type: ${isMobile ? 'Mobile' : 'Desktop'}`);
-        alert(`DEBUG: Flags set - isSocial: ${localStorage.getItem('isSocialLogin')}, isMobile: ${isMobile}`); // CONFIRMATION ALERT
 
         // MOBILE: Use redirect to avoid popup blockers
         if (isMobile) {
@@ -497,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isSocial = localStorage.getItem('isSocialLogin');
     const isPending = localStorage.getItem('googleRedirectPending');
 
-    // FIX: Define possibleRedirect (this was missing before)
+    // FIX: Define possibleRedirect
     const possibleRedirect = isSocial === 'true' || isPending === 'true' || window.location.hash.includes('access_token');
 
     if (possibleRedirect || window.location.search.includes('code=')) {
