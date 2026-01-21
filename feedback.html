@@ -278,6 +278,8 @@
                     <p class="text-muted italic h5">Loading thoughts from our community...</p>
                 </div>
 
+                <div id="feedback-error" class="alert alert-danger rounded-4 shadow-sm" style="display:none;"></div>
+
                 <div class="feedback-list d-flex flex-column gap-4 mb-5" id="feedback-list">
                     <!-- Feedbacks will be injected here -->
                 </div>
@@ -378,9 +380,31 @@
         const feedbackForm = document.getElementById('feedback-form');
         const feedbackList = document.getElementById('feedback-list');
         const loadingDiv = document.getElementById('loading-feedback');
+        const feedbackError = document.getElementById('feedback-error');
+
+        const escapeHtml = (value) => {
+            const str = String(value ?? '');
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        };
+
+        const setError = (message) => {
+            if (!feedbackError) return;
+            if (!message) {
+                feedbackError.style.display = 'none';
+                feedbackError.textContent = '';
+                return;
+            }
+            feedbackError.style.display = 'block';
+            feedbackError.textContent = message;
+        };
 
         // Check Auth State
-        firebase.auth().onAuthStateChanged((user) => {
+        auth.onAuthStateChanged((user) => {
             if (user) {
                 authPrompt.style.display = 'none';
                 formContainer.style.display = 'block';
@@ -394,13 +418,32 @@
         // Submit Feedback
         feedbackForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const user = firebase.auth().currentUser;
+            setError('');
+
+            const user = auth.currentUser;
             if (!user) {
                 alert('Please sign in first');
                 return;
             }
 
-            const message = document.getElementById('fb-message').value;
+            const submitBtn = feedbackForm.querySelector('button[type="submit"]');
+            const messageEl = document.getElementById('fb-message');
+            const message = (messageEl?.value || '').trim();
+
+            if (!message) {
+                alert('Please write a message first.');
+                return;
+            }
+
+            if (message.length > 1000) {
+                alert('Message is too long (max 1000 characters).');
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+            }
 
             try {
                 console.log("Preparing submission for user:", user.uid);
@@ -427,41 +470,64 @@
                 if (error.code === 'permission-denied') {
                     userMessage = "Permission Denied. Please ensure you are logged in and the database rules allow this submission.";
                 }
+                setError('Error submitting feedback: ' + userMessage);
                 alert('Error submitting feedback: ' + userMessage);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Feedback';
+                }
             }
         });
 
         // Load Feedbacks
-        db.collection('feedbacks').orderBy('timestamp', 'desc').onSnapshot((querySnapshot) => {
-            feedbackList.innerHTML = '';
-            loadingDiv.style.display = 'none';
+        db.collection('feedbacks')
+            .orderBy('timestamp', 'desc')
+            .limit(50)
+            .onSnapshot(
+                (querySnapshot) => {
+                    setError('');
+                    feedbackList.innerHTML = '';
+                    loadingDiv.style.display = 'none';
 
-            if (querySnapshot.empty) {
-                feedbackList.innerHTML = '<p style="text-align:center; color:#888;">No feedbacks yet. Be the first to share your experience!</p>';
-                return;
-            }
+                    if (querySnapshot.empty) {
+                        feedbackList.innerHTML = '<p style="text-align:center; color:#888;">No feedbacks yet. Be the first to share your experience!</p>';
+                        return;
+                    }
 
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Just now';
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data() || {};
+                        const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Just now';
 
-                const item = document.createElement('div');
-                item.className = 'card shadow-sm border-0 rounded-4 mb-4 feedback-item overflow-hidden';
-                item.style.borderLeft = "5px solid var(--primary-yellow)";
-                item.innerHTML = `
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="h5 fw-bold text-dark mb-0">${data.name}</span>
-                            <span class="badge bg-light text-muted fw-normal p-2 rounded-pill shadow-sm">
-                                <i class="bi bi-clock me-1"></i> ${date}
-                            </span>
-                        </div>
-                        <p class="card-text text-secondary lh-lg fs-5 mb-0">${data.message}</p>
-                    </div>
-                `;
-                feedbackList.appendChild(item);
-            });
-        });
+                        const item = document.createElement('div');
+                        item.className = 'card shadow-sm border-0 rounded-4 mb-4 feedback-item overflow-hidden';
+                        item.style.borderLeft = "5px solid var(--primary-yellow)";
+                        item.innerHTML = `
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="h5 fw-bold text-dark mb-0">${escapeHtml(data.name || 'Anonymous')}</span>
+                                    <span class="badge bg-light text-muted fw-normal p-2 rounded-pill shadow-sm">${escapeHtml(date)}</span>
+                                </div>
+                                <p class="card-text text-secondary lh-lg fs-5 mb-0">${escapeHtml(data.message || '')}</p>
+                            </div>
+                        `;
+                        feedbackList.appendChild(item);
+                    });
+                },
+                (error) => {
+                    console.error('Error loading feedbacks:', error);
+                    loadingDiv.style.display = 'none';
+
+                    if (error.code === 'permission-denied') {
+                        setError('Cannot load reviews: Permission Denied. Your Firestore rules must allow reads from the feedbacks collection.');
+                        feedbackList.innerHTML = '<p style="text-align:center; color:#888;">Reviews are temporarily unavailable.</p>';
+                        return;
+                    }
+
+                    setError('Cannot load reviews right now. Please try again later.');
+                    feedbackList.innerHTML = '<p style="text-align:center; color:#888;">Reviews are temporarily unavailable.</p>';
+                }
+            );
     </script>
 </body>
 
