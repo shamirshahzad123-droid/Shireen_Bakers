@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shireen-bakers.com/sitemap.xml
+Sitemap: https://www.shireen-bakers.com/sitemap.xml
