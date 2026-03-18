@@ -86,6 +86,130 @@
     ]
   }
   </script>
+
+    
+  
+  <style>
+    /* New Spice Theme */
+    :root {
+       --primary-red: #5c2e1f; /* Dark brown for text */
+    }
+    body {
+       background-color: #fcf8f2 !important;
+       background-image: url('images/background_pattern.webp') !important;
+       background-size: cover !important;
+       background-attachment: fixed !important;
+       color: #5c2e1f !important;
+    }
+
+    /* Remove yellow backgrounds */
+    body::before, .header {
+       background-image: none !important;
+       background-color: transparent !important;
+    }
+
+    .category-minimal .minimal-image-container,
+    .categories-section, .hero-section {
+       background-color: transparent !important;
+    }
+
+    /* Force standard elements to use the dark maroon/brown color */
+    .minimal-title, h1, h2, h3, h4, h5, h6, p, .section-title {
+       color: #5c2e1f !important;
+    }
+    
+    a:not(.switch-btn):not(.icon-btn):not(.social-circle) {
+       color: #5c2e1f !important;
+    }
+
+    /* Inline nav text styling to match image */
+    .inline-nav a { 
+        font-size: 1.15rem !important; 
+        font-weight: 500 !important; 
+        font-style: italic !important;
+        color: #7A3626 !important;
+    } 
+
+    /* The Login Button */
+    .header-actions .icon-btn:first-child {
+       background: linear-gradient(to bottom, #b4855d, #8a5a44) !important;
+       border: 1px solid #73442e !important;
+       border-radius: 8px !important;
+    }
+    .header-actions .icon-btn:first-child span {
+       color: #ffffff !important;
+       font-weight: bold !important;
+    }
+
+    /* Category Cards styling to match Image */
+    .category-minimal { background: transparent !important; border: none !important; border-radius: 0 !important; overflow: visible !important; }
+    .category-minimal .minimal-image-container { border-radius: 12px !important; overflow: hidden !important; border: none !important; padding: 0 !important; background: transparent !important; }
+    .category-minimal .minimal-image-container img { width: 100% !important; height: 100% !important; border-radius: 12px !important; }
+
+    .minimal-title {
+       font-size: 1.3rem !important;
+       font-weight: normal !important;
+       margin-bottom: 8px !important;
+    }
+
+    /* Keep the product image sizes */
+    .product-img { background: transparent !important; padding: 15px !important; display: flex; align-items: center; justify-content: center; height: 200px !important; margin-bottom: 15px; }
+    .product-img img { width: 100% !important; height: 100% !important; max-height: 100%; object-fit: contain !important; border-radius: 0 !important; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); transform: scale(1.25); transition: transform 0.3s ease; }
+    .product-card:hover .product-img img { transform: scale(1.35) !important; }
+    
+    .category-minimal:hover .minimal-image-container img { transform: scale(1.05) !important; }
+
+    /* Category 'SEE ALL' button */
+    .btn-outline-primary {
+       border: 1px solid #5c2e1f !important;
+       border-radius: 20px !important;
+       padding: 4px 15px !important;
+       font-size: 0.8rem !important;
+       color: #5c2e1f !important;
+       text-transform: uppercase;
+       background: transparent !important;
+    }
+
+    /* Brand Switch */
+    .brand-switch-outer { display: flex; justify-content: center; margin-bottom: 30px; margin-top: 10px;}
+    .brand-switch {
+       display: inline-flex;
+       background: linear-gradient(to right, #bc8665, #a36142);
+       border-radius: 40px;
+       padding: 5px;
+       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .brand-switch .switch-btn {
+       padding: 8px 25px;
+       border-radius: 30px;
+       font-weight: 600;
+       font-size: 14px;
+       color: #ffffff !important;
+       text-decoration: none !important;
+       background: transparent !important;
+    }
+    .brand-switch .switch-btn.active {
+       background-color: #fefcf9 !important;
+       color: #5c2e1f !important;
+       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Cart Counter */
+    .cart-count { background-color: #5c2e1f !important; color: #ffffff !important; padding: 2px 6px; border-radius: 50px; font-weight: bold; }
+    .header-actions .icon-btn:last-child span.cart-count { color: #ffffff !important; background-color: #5c2e1f !important; }
+    .header-actions .icon-btn:last-child span, .header-actions .icon-btn:last-child i { color: #5c2e1f !important; }
+
+    /* Filter logos to match the brown */
+    .navbar-brand img { filter: sepia(1) hue-rotate(335deg) saturate(2) brightness(0.6) !important; }
+
+    /* Fix Footer */
+    .footer, .footer-top, .footer-bottom, .footer-main { background-color: #0F0F0F !important; color: #ffffff !important; border: none !important; }
+    .footer a, .footer p, .footer span, .footer div, .footer-logo, .footer-bottom div, .powered-by { color: #ffffff !important; font-weight: normal !important; }
+    .footer-logo span { color: #ffffff !important; }
+    .footer-socials a.social-circle { background-color: #ffffff !important; border: none !important; }
+    .footer-socials a.social-circle svg { fill: #5c2e1f !important; }
+  </style>
+
 </head>
 
 <body>
@@ -143,12 +267,11 @@
         </nav>
         <div class="sidebar-overlay" onclick="document.querySelector('.sidebar-menu').classList.remove('active')"></div>
         <nav class="inline-nav">
-          <a href="cakes.html">Cakes</a>
-          <a href="pastries.html">Pastries</a>
-          <a href="biscuits.html">Biscuits</a>
-          <a href="bread.html">Bread</a>
-          <a href="rusk.html">Rusk</a>
-        </nav>
+            <a href="spice_appetizer.html">Appetizers</a>
+            <a href="spice_burger.html">Burger</a>
+            <a href="spice_pizza.html">Pizza</a>
+            <a href="spice_sandwich.html">Sandwich</a>
+          </nav>
       </div>
 
       <!-- Center: Logo -->
@@ -169,12 +292,11 @@
           </button>
         </div>
         <nav class="inline-nav">
-          <a href="snacks.html">Snacks</a>
-          <a href="donuts.html">Donuts</a>
-          <a href="icecream.html">Ice Cream</a>
-          <a href="cookies&khatai.html">Cookies</a>
-          <a href="puffs.html">Puffs</a>
-        </nav>
+            <a href="spice_pasta.html">Pasta</a>
+            <a href="spice_roll_paratha.html">Shawarma</a>
+            <a href="spice_special_pizza.html">Special Pizza</a>
+            <a href="spice_beverages.html">Beverages</a>
+          </nav>
       </div>
     </div>
   </header>
@@ -199,10 +321,10 @@
       }
       .brand-switch {
         display: inline-flex;
-        background-color: #eeeeee;
+        background-color: #fce4e4;
         border-radius: 40px;
         padding: 5px;
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
       }
       .brand-switch .switch-btn {
         text-decoration: none;
@@ -210,173 +332,203 @@
         border-radius: 30px;
         font-weight: 600;
         font-size: 16px;
-        color: #666;
+        color: #C8102E;
         transition: all 0.3s ease;
       }
       .brand-switch .switch-btn.active {
-        background-color: #f6c026; /* Yellow color for bakers */
-        color: #333333; /* Gray color for text */
-        box-shadow: 0 4px 10px rgba(246, 192, 38, 0.4);
+        background-color: #C8102E !important; /* Red theme for index2 */
+        color: #ffffff !important; /* White text */
+        box-shadow: 0 4px 10px rgba(200, 16, 46, 0.4);
       }
-    </style>
+      /* Ensure everything follows the red and white theme on index2 */
+      :root {
+         --primary-red: #C8102E;
+         --black: #C8102E;
+         --dark-gray: #C8102E;
+         --medium-gray: #C8102E;
+         --light-gray: #ffffff;
+      }
+      body {
+         background-color: #ffffff !important;
+         color: #C8102E !important;
+      }
+            /* Remove yellow background pattern */
+      body::before, .header {
+         background-image: none !important;
+         background-color: #ffffff !important;
+      }
+      /* Remove gray */
+      .category-minimal .minimal-image-container,
+      .footer, .footer-top, .footer-bottom, .categories-section, .hero-section {
+         background-color: #ffffff !important;
+      }
+      .navbar, .footer, .custom-navbar {
+         background-color: #ffffff !important;
+         border-color: #C8102E !important;
+      }
+      /* Bold larger text */
+      .minimal-title {
+         font-size: 1.1rem !important;
+         font-weight: 900 !important;
+      }
+      h1, h2, h3, h4, h5, h6, .section-title {
+         font-weight: 900 !important;
+      }
+      @media (max-width: 768px) {
+         .minimal-title {
+            font-size: 0.95rem !important;
+         }
+      }
+            /** Global bolder fonts for text **/
+      body {
+         font-weight: 600 !important;
+      }
+      .nav-link, .footer a, .footer p {
+         font-weight: 700 !important;
+         font-size: 1.05rem !important;
+      }
+      .minimal-title, h1, h2, h3, h4, h5, h6, p, a:not(.switch-btn.active):not(.icon-btn), span:not(.switch-btn.active):not(.icon-btn span):not(.cart-count) {
+         color: #C8102E !important;
+      }
+      /* Login button */
+      .header-actions .icon-btn:first-child {
+         background: #C8102E !important;
+         background-color: #C8102E !important;
+         border-color: #C8102E !important;
+      }
+      .header-actions .icon-btn:first-child span {
+         color: #ffffff !important;
+         font-weight: 800 !important;
+      }
+      .minimal-title, h1, h2, h3, h4, h5, h6, p, a:not(.switch-btn.active), span {
+         color: #C8102E !important;
+      }
+            .header-actions .icon-btn:last-child span,
+      .header-actions .icon-btn:last-child i {
+         color: #C8102E !important;
+         font-weight: bold;
+      }
+      .header-actions .icon-btn:last-child .cart-count {
+         color: #ffffff !important;
+      }
+      .navbar-brand img, .footer-logo-img {
+         filter: brightness(0) saturate(100%) invert(13%) sepia(85%) saturate(5437%) hue-rotate(345deg) brightness(97%) contrast(106%);
+      }
+          /* Change input/gray boxes to white */
+      .search-container input, .hero-search input {
+         background-color: #ffffff !important;
+      }
+      .brand-switch {
+         background-color: #ffffff !important;
+         border: 2px solid #C8102E;
+      }
+    
+    /* Force footer to be black and properly format text/logos inside it */
+    .footer, .footer-top, .footer-bottom, .footer-main { background-color: #0F0F0F !important; color: #ffffff !important; border: none !important; }
+    .footer a, .footer p, .footer span, .footer div, .footer-logo, .footer-bottom div, .powered-by { color: #ffffff !important; font-weight: normal !important; }
+    .footer-logo span { color: #ffffff !important; }
+    .footer-socials a.social-circle { background-color: #ffffff !important; border: none !important; }
+    .footer-socials a.social-circle svg { fill: #C8102E !important; }
+    .footer-logo-img { filter: none !important; } /* Restore original image colors for dark background */
+
+
+    /* Force footer to be black and properly format text/logos inside it */
+    .footer, .footer-top, .footer-bottom, .footer-main { background-color: #0F0F0F !important; color: #ffffff !important; border: none !important; }
+    .footer a, .footer p, .footer span, .footer div, .footer-logo, .footer-bottom div, .powered-by { color: #ffffff !important; font-weight: normal !important; }
+    .footer-logo span { color: #ffffff !important; }
+    .footer-socials a.social-circle { background-color: #ffffff !important; border: none !important; }
+    .footer-socials a.social-circle svg { fill: #C8102E !important; }
+    .footer-logo-img { filter: none !important; } /* Restore original image colors for dark background */
+
+</style>
     
     <div class="brand-switch-outer">
       <div class="brand-switch">
-        <a href="index.html" class="switch-btn active" id="btn-bakers">Bakers</a>
-        <a href="index2.html" class="switch-btn" id="btn-shireen">Shireen & Spice</a>
+        <a href="index.html" class="switch-btn" id="btn-bakers">Bakers</a>
+        <a href="index2.html" class="switch-btn active" id="btn-shireen">Shireen & Spice</a>
       </div>
     </div>
 
     <h2 class="section-title">Categories</h2>
 
     <div class="row row-cols-3 row-cols-md-4 gx-2 gy-4 g-md-5 justify-content-center">
-      <!-- Item 1: Cakes -->
+      <!-- Item 1: Appetizers -->
       <div class="col scroll-reveal">
-        <a href="cakes.html" class="category-minimal">
+        <a href="spice_appetizer.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/cakehtml.webp" alt="Cakes" id="cake-img" loading="lazy">
+            <img src="images/spice_appetizer_loadedfries.webp" alt="Appetizers" id="appetizers-img" loading="lazy">
           </div>
-          <div class="minimal-title">CAKES</div>
+          <div class="minimal-title">APPETIZERS</div>
         </a>
       </div>
 
-      <!-- Item 2: Bread -->
+      <!-- Item 2: Burger -->
       <div class="col scroll-reveal">
-        <a href="bread.html" class="category-minimal">
+        <a href="spice_burger.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/bread_category.webp" alt="Bread" id="bread-img" loading="lazy">
+            <img src="images/spice_burger_burgermain.webp" alt="Burger" id="burger-img" loading="lazy">
           </div>
-          <div class="minimal-title">BREAD</div>
+          <div class="minimal-title">BURGER</div>
         </a>
       </div>
 
-      <!-- Item 3: Snacks -->
+      <!-- Item 3: Pizza -->
       <div class="col scroll-reveal">
-        <a href="snacks.html" class="category-minimal">
+        <a href="spice_pizza.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/snacks.webp" alt="Snack" id="snack-img" loading="lazy">
+            <img src="images/spice_pizza_pizza_main.webp" alt="Pizza" id="pizza-img" loading="lazy">
           </div>
-          <div class="minimal-title">SNACKS</div>
+          <div class="minimal-title">PIZZA</div>
         </a>
       </div>
 
-      <!-- Item 4: Donuts -->
+      <!-- Item 4: Sandwich -->
       <div class="col scroll-reveal">
-        <a href="donuts.html" class="category-minimal">
+        <a href="spice_sandwich.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/Donuts.webp" alt="Donuts" id="donut-img" loading="lazy">
+            <img src="images/spice_sandwich_sandwichmain.webp" alt="Sandwiches" id="sandwich-img" loading="lazy">
           </div>
-          <div class="minimal-title">DONUTS</div>
+          <div class="minimal-title">SANDWICH</div>
         </a>
       </div>
 
-      <!-- Item 5: Pastries -->
+      <!-- Item 5: Pasta -->
       <div class="col scroll-reveal">
-        <a href="pastries.html" class="category-minimal">
+        <a href="spice_pasta.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/pastry.webp" alt="Pastries" id="pastry-img" loading="lazy">
+            <img src="images/spice_pasta_shireenspecial.webp" alt="Pasta" id="pasta-img" loading="lazy">
           </div>
-          <div class="minimal-title">PASTRIES</div>
+          <div class="minimal-title">PASTA</div>
         </a>
       </div>
 
-      <!-- Item 6: Biscuits -->
+      <!-- Item 6: Shawarma & Roll Paratha -->
       <div class="col scroll-reveal">
-        <a href="biscuits.html" class="category-minimal">
+        <a href="spice_roll_paratha.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/biscuitshtml.webp" alt="Biscuits" id="biscuit-img" loading="lazy">
+            <img src="images/spice_roll_paratha_parathamian.webp" alt="Shawarma & Roll Paratha" id="shawarma-img" loading="lazy">
           </div>
-          <div class="minimal-title">BISCUITS</div>
+          <div class="minimal-title" style="font-size: 0.8rem;">SHAWARMA & ROLL PARATHA</div>
         </a>
       </div>
 
-      <!-- Item 7: Icecream -->
+      <!-- Item 7: Special Pizza -->
       <div class="col scroll-reveal">
-        <a href="icecream.html" class="category-minimal">
+        <a href="spice_special_pizza.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/icecream.webp" alt="Icecream" id="icecream-img" loading="lazy">
+            <img src="images/spice_special_pizza_specialpizzamain.webp" alt="Special Pizza" id="special-pizza-img" loading="lazy">
           </div>
-          <div class="minimal-title">ICECREAM</div>
+          <div class="minimal-title">SPECIAL PIZZA</div>
         </a>
       </div>
 
-      <!-- Item 8: Rusk -->
+      <!-- Item 8: Beverages -->
       <div class="col scroll-reveal">
-        <a href="rusk.html" class="category-minimal">
+        <a href="spice_beverages.html" class="category-minimal">
           <div class="minimal-image-container">
-            <img src="images/ruskhtml.webp" alt="Rusk" id="rusk-img" loading="lazy">
+            <img src="images/gg.webp" alt="Beverages" id="beverages-img" loading="lazy">
           </div>
-          <div class="minimal-title">RUSK</div>
-        </a>
-      </div>
-
-      <!-- Item 9: Cookies & Khatai -->
-      <div class="col scroll-reveal">
-        <a href="cookies&khatai.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/khataihtml.webp" alt="cookies&khatai" id="cookies&khatai-img" loading="lazy">
-          </div>
-          <div class="minimal-title">COOKIES & KHATAI</div>
-        </a>
-      </div>
-
-      <!-- Item 10: Puffs -->
-      <div class="col scroll-reveal">
-        <a href="puffs.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/puffs.webp" alt="Puffs" id="puffs-img" loading="lazy">
-          </div>
-          <div class="minimal-title">PUFFS</div>
-        </a>
-      </div>
-
-      <!-- Item 11: Nimko -->
-      <div class="col scroll-reveal">
-        <a href="nimko.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/nimko.webp" alt="Nimko" id="nimko-img" loading="lazy">
-          </div>
-          <div class="minimal-title">NIMKO</div>
-        </a>
-      </div>
-
-      <!-- Item 12: Chocolate -->
-      <div class="col scroll-reveal">
-        <a href="chocolate.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/chocolate.webp" alt="Chocolate" id="chocolate-img" loading="lazy">
-          </div>
-          <div class="minimal-title">CHOCOLATE</div>
-        </a>
-      </div>
-
-      <!-- Item 13: Sandwiches -->
-      <div class="col scroll-reveal">
-        <a href="sandwiches.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/sandwich.webp" alt="Sandwiches" id="sandwich-img" loading="lazy">
-          </div>
-          <div class="minimal-title">SANDWICHES</div>
-        </a>
-      </div>
-
-      <!-- Item 14: Salad -->
-      <div class="col scroll-reveal">
-        <a href="salad.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/salad.webp" alt="Salad" id="salad-img" loading="lazy">
-          </div>
-          <div class="minimal-title">SALAD</div>
-        </a>
-      </div>
-
-      <!-- Item 15: Gifting -->
-      <div class="col scroll-reveal">
-        <a href="gifting.html" class="category-minimal">
-          <div class="minimal-image-container">
-            <img src="images/gifting.webp" alt="Gifting" id="gifting-img" loading="lazy">
-          </div>
-          <div class="minimal-title">GIFTING</div>
+          <div class="minimal-title">BEVERAGES</div>
         </a>
       </div>
     </div>
@@ -514,3 +666,7 @@
 </body>
 
 </html>
+
+
+
+
